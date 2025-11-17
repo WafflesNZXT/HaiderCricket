@@ -9,10 +9,15 @@
 <body>
     <nav>
         <div class="logo-container">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,20 L120,80 L100,140 L80,80 Z' fill='%23d4af37'/%3E%3Crect x='95' y='80' width='10' height='100' fill='%23d4af37'/%3E%3Cellipse cx='100' cy='75' rx='25' ry='15' fill='%23d4af37'/%3E%3C/svg%3E" alt="Haider Cricket Logo" class="logo">
+            <img src="WhatsApp_Image_2025-11-16_at_22.29.02-removebg-preview.png" alt="Haider Cricket Logo" class="logo">
             <span class="brand-name">HAIDER CRICKET</span>
         </div>
-        <ul>
+        <button type="button" class="menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Products</a></li>
             <li><a href="about.html">About</a></li>
@@ -27,12 +32,12 @@
             <div class="contact-info-card">
                 <div class="contact-icon">📞</div>
                 <h3>Phone</h3>
-                <p>+1 (555) 123-4567</p>
+                <p>+1 (408) 917-8533</p>
             </div>
             <div class="contact-info-card">
                 <div class="contact-icon">📧</div>
                 <h3>Email</h3>
-                <p>info@haidercricket.com</p>
+                <p>haider_waqas@yahoo.com</p>
             </div>
             <div class="contact-info-card">
                 <div class="contact-icon">📍</div>
@@ -41,7 +46,7 @@
             </div>
         </div>
 
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" method="post" >
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" required>

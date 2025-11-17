@@ -9,10 +9,15 @@
 <body>
     <nav>
         <div class="logo-container">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,20 L120,80 L100,140 L80,80 Z' fill='%23d4af37'/%3E%3Crect x='95' y='80' width='10' height='100' fill='%23d4af37'/%3E%3Cellipse cx='100' cy='75' rx='25' ry='15' fill='%23d4af37'/%3E%3C/svg%3E" alt="Haider Cricket Logo" class="logo">
+            <img src="WhatsApp_Image_2025-11-16_at_22.29.02-removebg-preview.png" alt="Haider Cricket Logo" class="logo">
             <span class="brand-name">HAIDER CRICKET</span>
         </div>
-        <ul>
+        <button type="button" class="menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu">
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">Products</a></li>
             <li><a href="about.html">About</a></li>
@@ -78,8 +83,8 @@
         <h2>Our Collection</h2>
         <div class="gallery-grid">
             <div class="gallery-item">
-                👕
-                <div class="gallery-label">Jerseys</div>
+                <a href="products.html" style="text-decoration: none;">👕</a>
+                <div class="gallery-label"><a href="products.html" style="text-decoration: none; color: black;">Jerseys</a></div>
             </div>
             <div class="gallery-item">
                 🏏
@@ -155,5 +160,7 @@
     <footer>
         <p>&copy; 2025 Haider Cricket. Forged for the Brave. All rights reserved.</p>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

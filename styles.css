@@ -43,7 +43,7 @@ nav {
 .logo {
     height: 50px;
     width: auto;
-    filter: brightness(0) invert(1);
+    border-radius: 5px;
     transition: transform 0.3s ease;
 }
 
@@ -289,6 +289,7 @@ nav a:hover::after {
 
 .gallery-label {
     position: absolute;
+    font-size: 1.2rem;
     bottom: 0;
     left: 0;
     right: 0;
@@ -683,6 +684,7 @@ nav a:hover::after {
     width: 90%;
     text-align: center;
     animation: scaleIn 0.3s ease;
+    pointer-events: auto;
 }
 
 .modal-content h2 {
@@ -733,6 +735,8 @@ nav a:hover::after {
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
+    background: transparent;
+    font-size: 1rem;
 }
 
 .design-option:hover,
@@ -779,7 +783,46 @@ nav a:hover::after {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+/* Design Sections - Modal Style */
+#customDesignSection,
+#premadeDesignSection,
+#orderFormSection {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1500;
+    overflow-y: auto;
+    background: var(--light-gray);
+}
+
+#customDesignSection.hidden,
+#premadeDesignSection.hidden,
+#orderFormSection.hidden {
+    display: none !important;
+}
+
+.close-btn {
+    padding: 0.5rem 1rem;
+    background: var(--secondary);
+    color: var(--primary);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(212,175,55,0.5);
 }
 
 /* Animations */
@@ -825,4 +868,145 @@ footer {
     color: var(--white);
     text-align: center;
     padding: 2rem;
+}
+
+/* Mobile Menu Button */
+.menu-btn {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    gap: 6px;
+    z-index: 1001;
+}
+
+.menu-btn span {
+    width: 25px;
+    height: 3px;
+    background: var(--white);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(8px, -8px);
+}
+
+/* Navigation Menu */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+nav ul.nav-menu.active {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: rgba(26, 26, 26, 0.98);
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 0;
+    width: 100%;
+    z-index: 999;
+}
+
+nav ul.nav-menu.active li {
+    padding: 1rem 5%;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+nav ul.nav-menu.active a {
+    display: block;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 3%;
+        gap: 1rem;
+    }
+
+    .menu-btn {
+        display: flex;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    nav ul.nav-menu.active {
+        display: flex;
+    }
+
+    .brand-name {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+    }
+
+    .cta-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .product-grid,
+    .gallery-grid,
+    .testimonial-grid,
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .design-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .design-option {
+        padding: 0.5rem;
+    }
+
+    .jersey-preview {
+        max-width: 300px;
+    }
+
+    .upload-section {
+        margin: 1rem 0;
+    }
+
+    .order-form {
+        padding: 1rem;
+    }
+
+    .contact-form {
+        padding: 1.5rem;
+    }
 }

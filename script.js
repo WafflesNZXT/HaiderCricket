@@ -6,19 +6,40 @@ let designState = {
 };
 
 function openDesignModal() {
-    document.getElementById('designModal').classList.add('active');
+    const modal = document.getElementById('designModal');
+    if (modal) {
+        modal.classList.add('active');
+        console.log('Modal opened');
+    } else {
+        console.error('Modal element not found');
+    }
 }
 
 function selectDesignType(type) {
+    console.log('selectDesignType called with type:', type);
     designState.type = type;
-    document.getElementById('designModal').classList.remove('active');
+    
+    const modal = document.getElementById('designModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
     
     if (type === 'custom') {
-        document.getElementById('customDesignSection').classList.remove('hidden');
-        window.scrollTo(0, 0);
-    } else {
-        document.getElementById('premadeDesignSection').classList.remove('hidden');
-        window.scrollTo(0, 0);
+        const customSection = document.getElementById('customDesignSection');
+        if (customSection) {
+            customSection.classList.remove('hidden');
+            console.log('Custom design section shown');
+        } else {
+            console.error('customDesignSection not found');
+        }
+    } else if (type === 'premade') {
+        const premadeSection = document.getElementById('premadeDesignSection');
+        if (premadeSection) {
+            premadeSection.classList.remove('hidden');
+            console.log('Premade design section shown');
+        } else {
+            console.error('premadeDesignSection not found');
+        }
     }
 }
 
@@ -87,7 +108,6 @@ function proceedToOrder() {
     document.getElementById('customDesignSection').classList.add('hidden');
     document.getElementById('premadeDesignSection').classList.add('hidden');
     document.getElementById('orderFormSection').classList.remove('hidden');
-    window.scrollTo(0, 0);
 }
 
 function submitOrder() {
@@ -118,37 +138,67 @@ function resetDesignState() {
     };
 }
 
-// Modal close functionality
-const modal = document.getElementById('designModal');
-if (modal) {
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.classList.remove('active');
-        }
-    });
+function closeDesignSection() {
+    document.getElementById('customDesignSection').classList.add('hidden');
+    document.getElementById('premadeDesignSection').classList.add('hidden');
+    document.getElementById('designModal').classList.add('active');
 }
 
-// Contact form submission
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
-    });
+function goBackToDesign() {
+    document.getElementById('orderFormSection').classList.add('hidden');
+    if (designState.type === 'custom') {
+        document.getElementById('customDesignSection').classList.remove('hidden');
+    } else if (designState.type === 'premade') {
+        document.getElementById('premadeDesignSection').classList.remove('hidden');
+    }
 }
-```
 
----
+function toggleMobileMenu() {
+    const menuBtn = document.querySelector('.menu-btn');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (menuBtn && navMenu) {
+        menuBtn.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    }
+}
 
-## **📁 File Structure**
+// Close mobile menu when a link is clicked
+function closeMobileMenu() {
+    const menuBtn = document.querySelector('.menu-btn');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (menuBtn && navMenu) {
+        menuBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+    }
+}
 
-Create this folder structure:
-```
-haider-cricket/
-├── index.html
-├── products.html
-├── about.html
-├── contact.html
-├── styles.css
-└── script.js
+// Wait for DOM to be ready before setting up event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal close functionality
+    const modal = document.getElementById('designModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    }
+
+    // Contact form submission
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+    }
+
+    // Close mobile menu when navigation links are clicked
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+});
