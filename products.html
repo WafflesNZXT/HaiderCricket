@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Haider Cricket</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,20 L120,80 L100,140 L80,80 Z' fill='%23d4af37'/%3E%3Crect x='95' y='80' width='10' height='100' fill='%23d4af37'/%3E%3Cellipse cx='100' cy='75' rx='25' ry='15' fill='%23d4af37'/%3E%3C/svg%3E" alt="Haider Cricket Logo" class="logo">
+            <span class="brand-name">HAIDER CRICKET</span>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="products-section">
+        <h2 class="section-title">Our Products</h2>
+        <div class="product-grid">
+            <div class="product-card" onclick="openDesignModal()">
+                <div class="product-image">🏏</div>
+                <div class="product-info">
+                    <h3>Custom Cricket Jersey</h3>
+                    <p>Design your own professional cricket jersey with custom logos and numbers</p>
+                    <button class="cta-btn">Customize Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Choice Modal -->
+    <div id="designModal" class="modal">
+        <div class="modal-content">
+            <h2>Choose Your Design Option</h2>
+            <div class="modal-options">
+                <button class="option-btn" onclick="selectDesignType('custom')">
+                    <strong>Custom Design</strong><br>
+                    Upload your own design
+                </button>
+                <button class="option-btn" onclick="selectDesignType('premade')">
+                    <strong>Pre-made Design</strong><br>
+                    Choose from our templates
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Design Section -->
+    <div id="customDesignSection" class="hidden">
+        <section style="background: var(--light-gray); padding-top: 8rem; min-height: 100vh;">
+            <h2 class="section-title">Custom Jersey Design</h2>
+            <div class="design-container">
+                <div class="jersey-preview">
+                    <svg class="jersey-svg" viewBox="0 0 300 400" id="jerseyPreview">
+                        <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                        <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="frontLogoArea"/>
+                        <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        <text x="150" y="250" text-anchor="middle" fill="#999" font-size="48" font-weight="bold" id="backNumber">00</text>
+                    </svg>
+                </div>
+                <div class="upload-section">
+                    <h3>Upload Front Logo</h3>
+                    <input type="file" id="frontLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'front')" style="display:none;">
+                    <button class="upload-btn" onclick="document.getElementById('frontLogoUpload').click()">Choose File</button>
+                    
+                    <h3 style="margin-top: 2rem;">Enter Back Number</h3>
+                    <input type="number" id="backNumberInput" placeholder="Enter number (0-99)" min="0" max="99" style="padding: 0.5rem; font-size: 1.2rem; width: 200px;" oninput="updateBackNumber(this.value)">
+                    
+                    <div style="margin-top: 2rem;">
+                        <button class="cta-btn" onclick="proceedToOrder()">Proceed to Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pre-made Design Section -->
+    <div id="premadeDesignSection" class="hidden">
+        <section style="background: var(--light-gray); padding-top: 8rem; min-height: 100vh;">
+            <h2 class="section-title">Choose a Pre-made Design</h2>
+            <div class="design-container">
+                <div class="design-grid">
+                    <div class="design-option" onclick="selectPremadeDesign('classic', '#1a5f1a')">
+                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
+                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#1a5f1a"/>
+                            <text x="50" y="70" text-anchor="middle" fill="white" font-size="12">Classic Green</text>
+                        </svg>
+                    </div>
+                    <div class="design-option" onclick="selectPremadeDesign('modern', '#0066cc')">
+                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
+                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#0066cc"/>
+                            <path d="M 20 20 L 80 65 L 20 110 Z" fill="#003d7a" opacity="0.5"/>
+                            <text x="50" y="70" text-anchor="middle" fill="white" font-size="12">Modern Blue</text>
+                        </svg>
+                    </div>
+                    <div class="design-option" onclick="selectPremadeDesign('bold', '#cc0000')">
+                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
+                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#cc0000"/>
+                            <rect x="20" y="50" width="60" height="30" fill="#8b0000"/>
+                            <text x="50" y="70" text-anchor="middle" fill="white" font-size="12">Bold Red</text>
+                        </svg>
+                    </div>
+                    <div class="design-option" onclick="selectPremadeDesign('elite', '#1a1a1a')">
+                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
+                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#1a1a1a"/>
+                            <path d="M 35 20 L 35 110" stroke="#d4af37" stroke-width="2"/>
+                            <path d="M 65 20 L 65 110" stroke="#d4af37" stroke-width="2"/>
+                            <text x="50" y="70" text-anchor="middle" fill="white" font-size="12">Elite Black</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="jersey-preview">
+                    <svg class="jersey-svg" viewBox="0 0 300 400" id="premadeJerseyPreview">
+                        <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2" id="premadeJerseyBase"/>
+                        <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="premadeFrontLogoArea"/>
+                        <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        <text x="150" y="250" text-anchor="middle" fill="#999" font-size="48" font-weight="bold" id="premadeBackNumber">00</text>
+                    </svg>
+                </div>
+                
+                <div class="upload-section">
+                    <h3>Upload Club Logo</h3>
+                    <input type="file" id="premadeLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'premade')" style="display:none;">
+                    <button class="upload-btn" onclick="document.getElementById('premadeLogoUpload').click()">Choose File</button>
+                    
+                    <h3 style="margin-top: 2rem;">Enter Back Number</h3>
+                    <input type="number" id="premadeBackNumberInput" placeholder="Enter number (0-99)" min="0" max="99" style="padding: 0.5rem; font-size: 1.2rem; width: 200px;" oninput="updatePremadeBackNumber(this.value)">
+                    
+                    <div style="margin-top: 2rem;">
+                        <button class="cta-btn" onclick="proceedToOrder()">Proceed to Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Order Form Section -->
+    <div id="orderFormSection" class="hidden">
+        <section style="padding-top: 8rem; background: var(--light-gray); min-height: 100vh;">
+            <h2 class="section-title">Complete Your Order</h2>
+            <div class="design-container">
+                <form class="order-form">
+                    <div class="form-group">
+                        <label for="orderPhone">Phone Number *</label>
+                        <input type="tel" id="orderPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderEmail">Email *</label>
+                        <input type="email" id="orderEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shirtQuantity">Number of Shirts *</label>
+                        <input type="number" id="shirtQuantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shirtSizes">Shirt Sizes (e.g., S, M, L, XL) *</label>
+                        <input type="text" id="shirtSizes" placeholder="e.g., 2x M, 3x L, 1x XL" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pantQuantity">Number of Pants</label>
+                        <input type="number" id="pantQuantity" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="pantSizes">Pant Sizes (e.g., 30, 32, 34)</label>
+                        <input type="text" id="pantSizes" placeholder="e.g., 2x 32, 1x 34">
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Club Logo(s) Again</label>
+                        <input type="file" id="finalLogoUpload" accept="image/*" multiple style="display:none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('finalLogoUpload').click()">Choose Files</button>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="submitOrder()">Submit Order</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Haider Cricket. Forged for the Brave. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
