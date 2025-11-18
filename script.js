@@ -186,14 +186,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Contact form submission
+    // Contact form submission - FIXED FOR FORMSPREE
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-            this.reset();
-        });
+        // Check if this is a Formspree form
+        if (contactForm.action && contactForm.action.includes('formspree.io')) {
+            // Let Formspree handle it naturally - don't prevent default
+            console.log('Formspree form detected - allowing natural submission');
+        } else {
+            // For other forms, use the custom handler
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message! We will get back to you soon.');
+                this.reset();
+            });
+        }
     }
 
     // Close mobile menu when navigation links are clicked
