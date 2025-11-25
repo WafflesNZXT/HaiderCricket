@@ -62,27 +62,114 @@
             <div style="position: absolute; top: 80px; right: 20px; z-index: 10;">
                 <button type="button" class="close-btn" onclick="closeDesignSection()">✕ Back</button>
             </div>
-            <h2 class="section-title">Custom Jersey Design</h2>
-            <div class="design-container">
-                <div class="jersey-preview">
-                    <svg class="jersey-svg" viewBox="0 0 300 400" id="jerseyPreview">
-                        <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
-                        <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
-                        <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="frontLogoArea"/>
-                        <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
-                        <text x="150" y="250" text-anchor="middle" fill="#999" font-size="48" font-weight="bold" id="backNumber">00</text>
-                    </svg>
+            <h2 class="section-title">Customize Your Jersey</h2>
+            
+            <!-- Front Design Content -->
+            <div id="frontDesignContent">
+                <h3 style="text-align: center; margin-bottom: 1rem;">Front View</h3>
+                <div class="design-container">
+                    <div class="jersey-preview">
+                        <svg class="jersey-svg" viewBox="0 0 300 400" id="jerseyPreview">
+                            <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="frontLogoArea"/>
+                            <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        </svg>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Upload Front Logo</h3>
+                        <input type="file" id="frontLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'front')" style="display:none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('frontLogoUpload').click()">Choose File</button>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Size</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <input type="range" id="logoSizeSlider" min="20" max="100" value="50" style="flex: 1;" oninput="updateLogoSize(this.value)">
+                            <span id="logoSizeValue" style="min-width: 40px;">50%</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Position - Horizontal</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="logoXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="logoXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Position - Vertical</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="logoYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="logoYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem;">
+                            <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="upload-section">
-                    <h3>Upload Front Logo</h3>
-                    <input type="file" id="frontLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'front')" style="display:none;">
-                    <button type="button" class="upload-btn" onclick="document.getElementById('frontLogoUpload').click()">Choose File</button>
-                    
-                    <h3 style="margin-top: 2rem;">Enter Back Number</h3>
-                    <input type="number" id="backNumberInput" placeholder="Enter number (0-99)" min="0" max="99" style="padding: 0.5rem; font-size: 1.2rem; width: 200px;" oninput="updateBackNumber(this.value)">
-                    
-                    <div style="margin-top: 2rem;">
-                        <button type="button" class="cta-btn" onclick="proceedToOrder()">Proceed to Order</button>
+            </div>
+            
+            <!-- Back Design Content -->
+            <div id="backDesignContent" class="hidden">
+                <h3 style="text-align: center; margin-bottom: 1rem;">Back View</h3>
+                <div class="design-container">
+                    <div class="jersey-preview" style="position: relative; display: inline-block; width: 300px; margin: 0 auto;">
+                        <img id="backPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                            <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;"></div>
+                        </div>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Back Number</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="number" id="backNumberInput" placeholder="Enter number (0-99)" min="0" max="99" value="00" style="padding: 0.5rem; font-size: 1rem; width: 150px;" oninput="updateBackNumber(this.value)">
+                            <input type="color" id="backNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                        </div>
+                        
+                        <h4>Number Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="backNumberXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="backNumberXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Number Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="backNumberYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="backNumberYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2.5rem;">Back Name</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="text" id="backNameInput" placeholder="Enter player name" value="" style="padding: 0.5rem; font-size: 1rem; flex: 1;" oninput="updateBackName(this.value)">
+                            <input type="color" id="backNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                        </div>
+                        
+                        <h4>Name Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="backNameXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNameX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="backNameXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Name Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="backNameYSlider" min="-100" max="50" value="0" style="flex: 1;" oninput="updateBackNameY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="backNameYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="button" class="cta-btn" onclick="editFront()" style="flex: 1;">Back to Front</button>
+                            <button type="button" class="cta-btn" onclick="proceedToOrder()" style="flex: 1;">Proceed to Order</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,56 +185,181 @@
             <h2 class="section-title">Choose a Pre-made Design</h2>
             <div class="design-container">
                 <div class="design-grid">
-                    <button type="button" class="design-option" onclick="selectPremadeDesign('classic', '#1a5f1a')">
-                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
-                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#1a5f1a"/>
-                            <text x="50" y="60" text-anchor="middle" fill="white" font-size="12">Classic</text><text x="50" y="80" text-anchor="middle" fill="white" font-size="12">Green</text>
-                        </svg>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2000.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2000.webp" class="pre-design-pic">
                     </button>
-                    <button type="button" class="design-option" onclick="selectPremadeDesign('modern', '#0066cc')">
-                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
-                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#0066cc"/>
-                            <path d="M 20 20 L 80 65 L 20 110 Z" fill="#003d7a" opacity="0.5"/>
-                            <text x="50" y="60" text-anchor="middle" fill="white" font-size="12">Modern</text><text x="50" y="80" text-anchor="middle" fill="white" font-size="12">Blue</text>
-                        </svg>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2001.webp', '#0066cc')">
+                        <img src="Cricket Designs/cr2001.webp" class="pre-design-pic">
                     </button>
-                    <button type="button" class="design-option" onclick="selectPremadeDesign('bold', '#cc0000')">
-                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
-                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#cc0000"/>
-                            <path d="M 20 20 L 80 65 L 20 110 Z" fill="#8b0000" opacity="0.5"/>
-                            <text x="50" y="60" text-anchor="middle" fill="white" font-size="12">Bold</text><text  x="50" y="80" text-anchor="middle" fill="white" font-size="12">Red</text>
-                        </svg> 
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2002.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2002.webp" class="pre-design-pic">
                     </button>
-                    <button type="button" class="design-option" onclick="selectPremadeDesign('elite', '#1a1a1a')">
-                        <svg viewBox="0 0 100 130" style="width: 100%; height: 150px;">
-                            <path d="M 20 20 L 20 110 L 80 110 L 80 20 Z" fill="#1a1a1a"/>
-                            <path d="M 35 20 L 35 110" stroke="#d4af37" stroke-width="2"/>
-                            <path d="M 65 20 L 65 110" stroke="#d4af37" stroke-width="2"/>
-                            <text x="50" y="60" text-anchor="middle" fill="white" font-size="12">Elite</text><text x="50" y="80" text-anchor="middle" fill="white" font-size="12">Black</text>
-                        </svg>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2003.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2003.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2004.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2004.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2005.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2005.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2006.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2006.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2007.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2007.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2008.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2008.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2009.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2009.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2010.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2010.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2011.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2011.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2012.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2012.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2013.webp', '#0066cc')">
+                        <img src="Cricket Designs/cr2013.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2014.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2014.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2015.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2015.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2016.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2016.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2017.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2017.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2018.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2018.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2019.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2019.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2020.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2020.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2021.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2021.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2022.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2022.png" class="pre-design-pic">
                     </button>
                 </div>
                 
-                <div class="jersey-preview">
-                    <svg class="jersey-svg" viewBox="0 0 300 400" id="premadeJerseyPreview">
-                        <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2" id="premadeJerseyBase"/>
-                        <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
-                        <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="premadeFrontLogoArea"/>
-                        <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
-                        <text x="150" y="250" text-anchor="middle" fill="#999" font-size="48" font-weight="bold" id="premadeBackNumber">00</text>
-                    </svg>
+                <!-- Front Design Content -->
+                <div id="premadeFrontDesignContent">
+                    <h3 style="text-align: center; margin: 2rem 0 1rem;">Front View</h3>
+                    <div class="jersey-preview">
+                        <svg class="jersey-svg" viewBox="0 0 300 400" id="premadeJerseyPreview">
+                            <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2" id="premadeJerseyBase"/>
+                            <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="premadeFrontLogoArea"/>
+                            <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h3>Upload Club Logo</h3>
+                        <input type="file" id="premadeLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'premade')" style="display:none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('premadeLogoUpload').click()">Choose File</button>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Size</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <input type="range" id="premadeLogoSizeSlider" min="20" max="100" value="50" style="flex: 1;" oninput="updateLogoSize(this.value)">
+                            <span id="premadeLogoSizeValue" style="min-width: 40px;">50%</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Position - Horizontal</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="premadeLogoXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="premadeLogoXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2rem;">Logo Position - Vertical</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="premadeLogoYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="premadeLogoYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem;">
+                            <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="upload-section">
-                    <h3>Upload Club Logo</h3>
-                    <input type="file" id="premadeLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'premade')" style="display:none;">
-                    <button type="button" class="upload-btn" onclick="document.getElementById('premadeLogoUpload').click()">Choose File</button>
-                    
-                    <h3 style="margin-top: 2rem;">Enter Back Number</h3>
-                    <input type="number" id="premadeBackNumberInput" placeholder="Enter number (0-99)" min="0" max="99" style="padding: 0.5rem; font-size: 1.2rem; width: 200px;" oninput="updatePremadeBackNumber(this.value)">
-                    
-                    <div style="margin-top: 2rem;">
-                        <button type="button" class="cta-btn" onclick="proceedToOrder()">Proceed to Order</button>
+                <!-- Back Design Content -->
+                <div id="premadeBackDesignContent" class="hidden">
+                    <h3 style="text-align: center; margin: 2rem 0 1rem;">Back View</h3>
+                    <div class="jersey-preview" style="position: relative; display: inline-block; width: 300px; margin: 0 auto;">
+                        <img id="premadeBackPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                            <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;"></div>
+                        </div>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Back Number</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="number" id="premadeBackNumberInput" placeholder="Enter number (0-99)" min="0" max="99" value="00" style="padding: 0.5rem; font-size: 1rem; width: 150px;" oninput="updateBackNumber(this.value)">
+                            <input type="color" id="premadeBackNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                        </div>
+                        
+                        <h4>Number Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="premadeBackNumberXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="premadeBackNumberXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Number Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="premadeBackNumberYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="premadeBackNumberYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2.5rem;">Back Name</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="text" id="premadeBackNameInput" placeholder="Enter player name" value="" style="padding: 0.5rem; font-size: 1rem; flex: 1;" oninput="updateBackName(this.value)">
+                            <input type="color" id="premadeBackNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                        </div>
+                        
+                        <h4>Name Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="premadeBackNameXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNameX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="premadeBackNameXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Name Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="premadeBackNameYSlider" min="-200" max="50" value="0" style="flex: 1;" oninput="updateBackNameY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="premadeBackNameYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="button" class="cta-btn" onclick="editFront()" style="flex: 1;">Back to Front</button>
+                            <button type="button" class="cta-btn" onclick="proceedToOrder()" style="flex: 1;">Proceed to Order</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,9 +400,18 @@
                         <input type="text" id="pantSizes" placeholder="e.g., 2x 32, 1x 34">
                     </div>
                     <div class="form-group">
+                        <label for="playernames">Player Names List</label>
+                        <input type="text" id="playernames" placeholder="e.g., John Doe, Jane Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="playernumbers">Player Numbers List</label>
+                        <input type="text" id="playernumbers" placeholder="e.g., 10, 7, 23">
+                    </div>
+                    <div class="form-group">
                         <label>Upload Club Logo(s) Again</label>
                         <input type="file" id="finalLogoUpload" accept="image/*" multiple style="display:none;">
                         <button type="button" class="upload-btn" onclick="document.getElementById('finalLogoUpload').click()">Choose Files</button>
+                        <div id="logoPreviewContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;"></div>
                     </div>
                     <button type="button" class="cta-btn" onclick="submitOrder()">Submit Order</button>
                 </form>
