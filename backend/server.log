@@ -6,3 +6,122 @@
 🏏 Order processing server running on http://localhost:3001
 📧 Webhook endpoint: http://localhost:${PORT}/api/order
 
+Received order: {
+  phone: '555-9999',
+  email: 'user@example.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 600
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 2
+Extracted uploadedLogos: 2 logos
+uploadedLogos details: [
+  {
+    index: 0,
+    name: 'test-logo-1.png',
+    hasData: true,
+    dataLength: 118,
+    dataPrefix: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEA'
+  },
+  {
+    index: 1,
+    name: 'test-logo-2.jpg',
+    hasData: true,
+    dataLength: 407,
+    dataPrefix: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD'
+  }
+]
+Processing logo 1: test-logo-1.png, data length: 118
+Logo 1 converted to buffer, size: 70 bytes
+Logo 1 added to attachments with cid: uploaded-logo-1
+Processing logo 2: test-logo-2.jpg, data length: 407
+Logo 2 converted to buffer, size: 287 bytes
+Logo 2 added to attachments with cid: uploaded-logo-2
+About to send email with 4 attachments
+Quote request email sent successfully
+Received order: {
+  phone: '555-9999',
+  email: 'test2@example.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 149
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 1
+Extracted uploadedLogos: 1 logos
+uploadedLogos details: [
+  {
+    index: 0,
+    name: 'logo.png',
+    hasData: true,
+    dataLength: 118,
+    dataPrefix: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEA'
+  }
+]
+Processing logo 1: logo.png, data length: 118
+Logo 1 converted to buffer, size: 70 bytes
+Logo 1 added to attachments with cid: uploaded-logo-1
+About to send email with 3 attachments
+Quote request email sent successfully
+Received order: {
+  phone: '5107315554',
+  email: 'Haider_waqas@yahoo.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 2
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 0
+Extracted uploadedLogos: 0 logos
+uploadedLogos details: []
+About to send email with 2 attachments
+Quote request email sent successfully
+Received order: {
+  phone: '5107315553',
+  email: 'Haider_waqas@yahoo.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 81445
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 1
+Extracted uploadedLogos: 1 logos
+uploadedLogos details: [
+  {
+    index: 0,
+    name: 'merclay.jpg',
+    hasData: true,
+    dataLength: 81411,
+    dataPrefix: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD'
+  }
+]
+Processing logo 1: merclay.jpg, data length: 81411
+Logo 1 converted to buffer, size: 61041 bytes
+Logo 1 added to attachments with cid: uploaded-logo-1
+About to send email with 3 attachments
+Quote request email sent successfully
+Received order: {
+  phone: '5107315552',
+  email: 'Haider_waqas@yahoo.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 81445
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 1
+Extracted uploadedLogos: 1 logos
+uploadedLogos details: [
+  {
+    index: 0,
+    name: 'merclay.jpg',
+    hasData: true,
+    dataLength: 81411,
+    dataPrefix: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD'
+  }
+]
+Processing logo 1: merclay.jpg, data length: 81411
+Logo 1 converted to buffer, size: 61041 bytes
+Logo 1 added to attachments with cid: uploaded-logo-1
+About to send email with 3 attachments
+Quote request email sent successfully
