@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - Haider Cricket</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script async defer src="https://unpkg.com/@emailjs/browser@4/dist/index.min.js"></script>
 </head>
 <body>
     <nav>
@@ -77,31 +79,11 @@
                         </svg>
                     </div>
                     <div class="upload-section">
-                        <h3>Upload Front Logo</h3>
-                        <input type="file" id="frontLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'front')" style="display:none;">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('frontLogoUpload').click()">Choose File</button>
+                        <h3>Club Logos</h3>
+                        <button type="button" class="cta-btn" onclick="document.getElementById('frontLogoUpload').click()">+ Add Logo</button>
+                        <input type="file" id="frontLogoUpload" accept="image/*" multiple style="display:none;" onchange="handleMultipleLogosUpload(event, 'custom')">
                         
-                        <h3 style="margin-top: 2rem;">Logo Size</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <input type="range" id="logoSizeSlider" min="20" max="100" value="50" style="flex: 1;" oninput="updateLogoSize(this.value)">
-                            <span id="logoSizeValue" style="min-width: 40px;">50%</span>
-                        </div>
-                        
-                        <h3 style="margin-top: 2rem;">Logo Position - Horizontal</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="min-width: 40px;">Left</span>
-                            <input type="range" id="logoXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoX(this.value)">
-                            <span style="min-width: 40px;">Right</span>
-                            <span id="logoXValue" style="min-width: 30px;">0</span>
-                        </div>
-                        
-                        <h3 style="margin-top: 2rem;">Logo Position - Vertical</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="min-width: 40px;">Up</span>
-                            <input type="range" id="logoYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoY(this.value)">
-                            <span style="min-width: 40px;">Down</span>
-                            <span id="logoYValue" style="min-width: 30px;">0</span>
-                        </div>
+                        <div id="customFrontLogosContainer" style="margin-top: 2rem;"></div>
                         
                         <div style="margin-top: 2rem;">
                             <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
@@ -118,14 +100,22 @@
                         <img id="backPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
                             <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
-                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;"></div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;">SAMPLE NAME</div>
                         </div>
                     </div>
                     <div class="upload-section">
                         <h3>Back Number</h3>
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="number" id="backNumberInput" placeholder="Enter number (0-99)" min="0" max="99" value="00" style="padding: 0.5rem; font-size: 1rem; width: 150px;" oninput="updateBackNumber(this.value)">
                             <input type="color" id="backNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Number Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="backNumberSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNumberSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="backNumberSizeValue" style="min-width: 30px;">100%</span>
                         </div>
                         
                         <h4>Number Position - Horizontal</h4>
@@ -146,8 +136,16 @@
                         
                         <h3 style="margin-top: 2.5rem;">Back Name</h3>
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="text" id="backNameInput" placeholder="Enter player name" value="" style="padding: 0.5rem; font-size: 1rem; flex: 1;" oninput="updateBackName(this.value)">
                             <input type="color" id="backNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Name Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="backNameSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNameSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="backNameSizeValue" style="min-width: 30px;">100%</span>
                         </div>
                         
                         <h4>Name Position - Horizontal</h4>
@@ -269,31 +267,11 @@
                     </div>
                     
                     <div class="upload-section">
-                        <h3>Upload Club Logo</h3>
-                        <input type="file" id="premadeLogoUpload" accept="image/*" onchange="handleLogoUpload(event, 'premade')" style="display:none;">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('premadeLogoUpload').click()">Choose File</button>
+                        <h3>Club Logos</h3>
+                        <button type="button" class="cta-btn" onclick="document.getElementById('premadeLogoUpload').click()">+ Add Logo</button>
+                        <input type="file" id="premadeLogoUpload" accept="image/*" multiple style="display:none;" onchange="handleMultipleLogosUpload(event, 'premade')">
                         
-                        <h3 style="margin-top: 2rem;">Logo Size</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <input type="range" id="premadeLogoSizeSlider" min="20" max="100" value="50" style="flex: 1;" oninput="updateLogoSize(this.value)">
-                            <span id="premadeLogoSizeValue" style="min-width: 40px;">50%</span>
-                        </div>
-                        
-                        <h3 style="margin-top: 2rem;">Logo Position - Horizontal</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="min-width: 40px;">Left</span>
-                            <input type="range" id="premadeLogoXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoX(this.value)">
-                            <span style="min-width: 40px;">Right</span>
-                            <span id="premadeLogoXValue" style="min-width: 30px;">0</span>
-                        </div>
-                        
-                        <h3 style="margin-top: 2rem;">Logo Position - Vertical</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="min-width: 40px;">Up</span>
-                            <input type="range" id="premadeLogoYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateLogoY(this.value)">
-                            <span style="min-width: 40px;">Down</span>
-                            <span id="premadeLogoYValue" style="min-width: 30px;">0</span>
-                        </div>
+                        <div id="premadeFrontLogosContainer" style="margin-top: 2rem;"></div>
                         
                         <div style="margin-top: 2rem;">
                             <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
@@ -308,14 +286,22 @@
                         <img id="premadeBackPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
                             <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
-                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;"></div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;">SAMPLE NAME</div>
                         </div>
                     </div>
                     <div class="upload-section">
                         <h3>Back Number</h3>
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="number" id="premadeBackNumberInput" placeholder="Enter number (0-99)" min="0" max="99" value="00" style="padding: 0.5rem; font-size: 1rem; width: 150px;" oninput="updateBackNumber(this.value)">
                             <input type="color" id="premadeBackNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Number Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="premadeBackNumberSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNumberSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="premadeBackNumberSizeValue" style="min-width: 30px;">100%</span>
                         </div>
                         
                         <h4>Number Position - Horizontal</h4>
@@ -336,8 +322,16 @@
                         
                         <h3 style="margin-top: 2.5rem;">Back Name</h3>
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="text" id="premadeBackNameInput" placeholder="Enter player name" value="" style="padding: 0.5rem; font-size: 1rem; flex: 1;" oninput="updateBackName(this.value)">
                             <input type="color" id="premadeBackNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Name Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="premadeBackNameSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNameSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="premadeBackNameSizeValue" style="min-width: 30px;">100%</span>
                         </div>
                         
                         <h4>Name Position - Horizontal</h4>
@@ -374,38 +368,38 @@
             </div>
             <h2 class="section-title">Complete Your Order</h2>
             <div class="design-container">
-                <form class="order-form">
+                <form class="order-form" id="orderForm" onsubmit="prepareOrderSubmission(event)">
                     <div class="form-group">
                         <label for="orderPhone">Phone Number *</label>
-                        <input type="tel" id="orderPhone" required>
+                        <input type="tel" id="orderPhone" name="phone" required>
                     </div>
                     <div class="form-group">
                         <label for="orderEmail">Email *</label>
-                        <input type="email" id="orderEmail" required>
+                        <input type="email" id="orderEmail" name="email" required>
                     </div>
                     <div class="form-group">
                         <label for="shirtQuantity">Number of Shirts *</label>
-                        <input type="number" id="shirtQuantity" min="1" required>
+                        <input type="number" id="shirtQuantity" name="shirtQuantity" min="1" required>
                     </div>
                     <div class="form-group">
                         <label for="shirtSizes">Shirt Sizes (e.g., S, M, L, XL) *</label>
-                        <input type="text" id="shirtSizes" placeholder="e.g., 2x M, 3x L, 1x XL" required>
+                        <input type="text" id="shirtSizes" name="shirtSizes" placeholder="e.g., 2x M, 3x L, 1x XL" required>
                     </div>
                     <div class="form-group">
                         <label for="pantQuantity">Number of Pants</label>
-                        <input type="number" id="pantQuantity" min="0">
+                        <input type="number" id="pantQuantity" name="pantQuantity" min="0">
                     </div>
                     <div class="form-group">
                         <label for="pantSizes">Pant Sizes (e.g., 30, 32, 34)</label>
-                        <input type="text" id="pantSizes" placeholder="e.g., 2x 32, 1x 34">
+                        <input type="text" id="pantSizes" name="pantSizes" placeholder="e.g., 2x 32, 1x 34">
                     </div>
                     <div class="form-group">
                         <label for="playernames">Player Names List</label>
-                        <input type="text" id="playernames" placeholder="e.g., John Doe, Jane Smith">
+                        <input type="text" id="playernames" name="playernames" placeholder="e.g., John Doe, Jane Smith">
                     </div>
                     <div class="form-group">
                         <label for="playernumbers">Player Numbers List</label>
-                        <input type="text" id="playernumbers" placeholder="e.g., 10, 7, 23">
+                        <input type="text" id="playernumbers" name="playernumbers" placeholder="e.g., 10, 7, 23">
                     </div>
                     <div class="form-group">
                         <label>Upload Club Logo(s) Again</label>
@@ -413,7 +407,10 @@
                         <button type="button" class="upload-btn" onclick="document.getElementById('finalLogoUpload').click()">Choose Files</button>
                         <div id="logoPreviewContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;"></div>
                     </div>
-                    <button type="button" class="cta-btn" onclick="submitOrder()">Submit Order</button>
+                    <!-- Hidden field to store jersey design screenshot -->
+                    <textarea id="designScreenshot" name="designScreenshot" style="display:none;"></textarea>
+                    <textarea id="designData" name="designData" style="display:none;"></textarea>
+                    <button type="submit" class="cta-btn">Submit Order</button>
                 </form>
             </div>
         </section>

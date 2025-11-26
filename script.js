@@ -1,18 +1,17 @@
 let designState = {
     type: null,
     premadeDesign: null,
-    frontLogo: null,
+    frontLogos: [], // Array of { id, imageData, size, x, y }
     backNumber: '00',
+    backNumberSize: 100,
     backNumberX: 0,
     backNumberY: 0,
     backNumberColor: '#ffffff',
-    backName: '',
+    backName: 'Sample Name',
+    backNameSize: 100,
     backNameX: 0,
     backNameY: 0,
     backNameColor: '#ffffff',
-    logoSize: 50,
-    logoX: 0,
-    logoY: 0,
     currentView: 'front' // 'front' or 'back'
 };
 
@@ -76,6 +75,126 @@ function selectPremadeDesign(designFilename, color) {
     if (oldSvg) {
         oldSvg.replaceWith(newImage);
     }
+    
+    // Scroll to the front design customization area
+    const premadeFrontDesignContent = document.getElementById('premadeFrontDesignContent');
+    if (premadeFrontDesignContent) {
+        premadeFrontDesignContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function handleMultipleLogosUpload(event, type) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    // Process each file
+    Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const logoId = Date.now() + index;
+            const logoObject = {
+                id: logoId,
+                imageData: e.target.result,
+                size: 50,
+                x: 0,
+                y: 0
+            };
+            
+            designState.frontLogos.push(logoObject);
+            renderLogoControls(type);
+            redrawDesignPreview(type);
+        };
+        reader.readAsDataURL(file);
+    });
+    
+    // Reset file input
+    event.target.value = '';
+}
+
+function renderLogoControls(type) {
+    const containerId = type === 'custom' ? 'customFrontLogosContainer' : 'premadeFrontLogosContainer';
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    if (!designState.frontLogos || designState.frontLogos.length === 0) return;
+    
+    designState.frontLogos.forEach((logo, index) => {
+        const logoCard = document.createElement('div');
+        logoCard.style.cssText = `
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        `;
+        
+        logoCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4 style="margin: 0;">Logo ${index + 1}</h4>
+                <button type="button" onclick="removeLogoAtIndex(${index}, '${type}')" style="background: #ff4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Remove</button>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start;">
+                <img src="${logo.imageData}" style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 2px solid #ddd;">
+                <div style="flex: 1;">
+                    <h4>Logo Size</h4>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="min-width: 40px;">Small</span>
+                        <input type="range" min="20" max="100" value="${logo.size}" style="flex: 1;" oninput="updateLogoSizeAtIndex(${index}, this.value, '${type}')">
+                        <span style="min-width: 40px;">Large</span>
+                        <span style="min-width: 30px;">${logo.size}%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>Logo Position - Horizontal</h4>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <span style="min-width: 40px;">Left</span>
+                <input type="range" min="-200" max="50" value="${logo.x}" style="flex: 1;" oninput="updateLogoXAtIndex(${index}, this.value, '${type}')">
+                <span style="min-width: 40px;">Right</span>
+                <span style="min-width: 30px;">${logo.x}</span>
+            </div>
+            
+            <h4>Logo Position - Vertical</h4>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="min-width: 40px;">Up</span>
+                <input type="range" min="-50" max="350" value="${logo.y}" style="flex: 1;" oninput="updateLogoYAtIndex(${index}, this.value, '${type}')">
+                <span style="min-width: 40px;">Down</span>
+                <span style="min-width: 30px;">${logo.y}</span>
+            </div>
+        `;
+        
+        container.appendChild(logoCard);
+    });
+}
+
+function removeLogoAtIndex(index, type) {
+    if (designState.frontLogos && designState.frontLogos.length > index) {
+        designState.frontLogos.splice(index, 1);
+        renderLogoControls(type);
+        redrawDesignPreview(type);
+    }
+}
+
+function updateLogoSizeAtIndex(index, size, type) {
+    if (designState.frontLogos && designState.frontLogos[index]) {
+        designState.frontLogos[index].size = parseInt(size);
+        redrawDesignPreview(type);
+    }
+}
+
+function updateLogoXAtIndex(index, x, type) {
+    if (designState.frontLogos && designState.frontLogos[index]) {
+        designState.frontLogos[index].x = parseInt(x);
+        redrawDesignPreview(type);
+    }
+}
+
+function updateLogoYAtIndex(index, y, type) {
+    if (designState.frontLogos && designState.frontLogos[index]) {
+        designState.frontLogos[index].y = parseInt(y);
+        redrawDesignPreview(type);
+    }
 }
 
 function handleLogoUpload(event, type) {
@@ -91,7 +210,8 @@ function handleLogoUpload(event, type) {
 }
 
 function redrawDesignPreview(type = null) {
-    if (!designState.frontLogo) return;
+    // Skip if no logos are added
+    if (!designState.frontLogos || designState.frontLogos.length === 0) return;
     
     const currentType = type || designState.type;
     
@@ -107,148 +227,102 @@ function redrawDesignPreview(type = null) {
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 
-                const logo = new Image();
-                logo.onload = function() {
-                    // Base logo size (diameter of circle in pixels)
-                    const baseLogoSize = 80;
-                    const logoSize = (designState.logoSize / 50) * baseLogoSize;
-                    
-                    // Position: top-right corner of jersey with manual adjustments
-                    const baseX = 170;
-                    const baseY = 20;
-                    const x = baseX + (designState.logoX / 50) * 30;
-                    const y = baseY + (designState.logoY / 50) * 30;
-                    
-                    // Create circular clipping and draw with aspect ratio maintained
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(x + logoSize / 2, y + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-                    ctx.clip();
-                    // Draw image centered within the circular area, maintaining aspect ratio
-                    ctx.drawImage(logo, x, y, logoSize, logoSize);
-                    ctx.restore();
-                    
-                    if (designState.backNumber) {
-                        ctx.font = `bold ${canvas.height * 0.15}px Arial`;
-                        ctx.fillStyle = '#ffffff';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(designState.backNumber, canvas.width / 2, canvas.height * 0.65);
-                    }
-                    
-                    jerseyImage.src = canvas.toDataURL();
-                };
-                logo.src = designState.frontLogo;
+                // Draw all logos
+                let logosLoaded = 0;
+                designState.frontLogos.forEach(logoData => {
+                    const logo = new Image();
+                    logo.onload = function() {
+                        logosLoaded++;
+                        
+                        // Base logo size (diameter of circle in pixels)
+                        const baseLogoSize = 80;
+                        const logoSize = (logoData.size / 50) * baseLogoSize;
+                        
+                        // Position: top-right corner of jersey with manual adjustments
+                        const baseX = 170;
+                        const baseY = 20;
+                        const x = baseX + (logoData.x / 50) * 30;
+                        const y = baseY + (logoData.y / 50) * 30;
+                        
+                        // Create circular clipping and draw with aspect ratio maintained
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(x + logoSize / 2, y + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+                        ctx.clip();
+                        // Draw image centered within the circular area, maintaining aspect ratio
+                        ctx.drawImage(logo, x, y, logoSize, logoSize);
+                        ctx.restore();
+                        
+                        // Update image only after all logos are loaded
+                        if (logosLoaded === designState.frontLogos.length) {
+                            jerseyImage.src = canvas.toDataURL();
+                        }
+                    };
+                    logo.src = logoData.imageData;
+                });
             };
             img.src = designState.premadeDesign.filename;
         }
     } else if (currentType === 'custom') {
         const previewSvg = document.getElementById('jerseyPreview');
-        const existingLogo = previewSvg.querySelector('#uploadedLogofront');
-        if (existingLogo) {
-            existingLogo.remove();
-        }
+        // Remove all existing logos
+        previewSvg.querySelectorAll('[id^="uploadedLogo"]').forEach(el => el.remove());
         
-        const logo = new Image();
-        logo.onload = function() {
-            // Base size: 60px diameter
-            const baseLogoSize = 60;
-            const logoSize = (designState.logoSize / 50) * baseLogoSize;
-            
-            // Create circular logo with maintained aspect ratio
-            const logoCanvas = document.createElement('canvas');
-            const logoCtx = logoCanvas.getContext('2d');
-            logoCanvas.width = logoSize;
-            logoCanvas.height = logoSize;
-            
-            // Create circle clipping path
-            logoCtx.beginPath();
-            logoCtx.arc(logoSize / 2, logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-            logoCtx.clip();
-            
-            // Draw image maintaining aspect ratio within circle
-            logoCtx.drawImage(logo, 0, 0, logoSize, logoSize);
-            
-            // Position: top-right of jersey SVG with manual adjustments
-            const baseX = 240 - logoSize / 2;
-            const baseY = 25;
-            const x = baseX + (designState.logoX / 50) * 15;
-            const y = baseY + (designState.logoY / 50) * 15;
-            
-            const logoImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            logoImage.setAttribute('id', 'uploadedLogofront');
-            logoImage.setAttribute('href', logoCanvas.toDataURL());
-            logoImage.setAttribute('x', `${x}`);
-            logoImage.setAttribute('y', `${y}`);
-            logoImage.setAttribute('width', `${logoSize}`);
-            logoImage.setAttribute('height', `${logoSize}`);
-            logoImage.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-            
-            previewSvg.appendChild(logoImage);
-            
-            const placeholderTexts = previewSvg.querySelectorAll('text');
-            placeholderTexts.forEach(text => {
-                if (text.textContent === 'Front Logo') {
-                    text.style.display = 'none';
+        // Draw all logos
+        let logosLoaded = 0;
+        designState.frontLogos.forEach((logoData, logoIndex) => {
+            const logo = new Image();
+            logo.onload = function() {
+                logosLoaded++;
+                
+                // Base size: 60px diameter
+                const baseLogoSize = 60;
+                const logoSize = (logoData.size / 50) * baseLogoSize;
+                
+                // Create circular logo with maintained aspect ratio
+                const logoCanvas = document.createElement('canvas');
+                const logoCtx = logoCanvas.getContext('2d');
+                logoCanvas.width = logoSize;
+                logoCanvas.height = logoSize;
+                
+                // Create circle clipping path
+                logoCtx.beginPath();
+                logoCtx.arc(logoSize / 2, logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+                logoCtx.clip();
+                
+                // Draw image maintaining aspect ratio within circle
+                logoCtx.drawImage(logo, 0, 0, logoSize, logoSize);
+                
+                // Position: top-right of jersey SVG with manual adjustments
+                const baseX = 240 - logoSize / 2;
+                const baseY = 25;
+                const x = baseX + (logoData.x / 50) * 15;
+                const y = baseY + (logoData.y / 50) * 15;
+                
+                const logoImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+                logoImage.setAttribute('id', `uploadedLogo${logoIndex}`);
+                logoImage.setAttribute('href', logoCanvas.toDataURL());
+                logoImage.setAttribute('x', `${x}`);
+                logoImage.setAttribute('y', `${y}`);
+                logoImage.setAttribute('width', `${logoSize}`);
+                logoImage.setAttribute('height', `${logoSize}`);
+                logoImage.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                
+                previewSvg.appendChild(logoImage);
+                
+                // Update placeholder text only after all logos are loaded
+                if (logosLoaded === designState.frontLogos.length) {
+                    const placeholderTexts = previewSvg.querySelectorAll('text');
+                    placeholderTexts.forEach(text => {
+                        if (text.textContent === 'Front Logo') {
+                            text.style.display = 'none';
+                        }
+                    });
                 }
-            });
-        };
-        logo.src = designState.frontLogo;
+            };
+            logo.src = logoData.imageData;
+        });
     }
-}
-
-function updateLogoSize(value) {
-    designState.logoSize = value;
-    
-    // Update all size display labels
-    const sizeValueLabels = document.querySelectorAll('#logoSizeValue, #premadeLogoSizeValue');
-    sizeValueLabels.forEach(label => {
-        label.textContent = value + '%';
-    });
-    
-    // Update all slider positions
-    const sliders = document.querySelectorAll('#logoSizeSlider, #premadeLogoSizeSlider');
-    sliders.forEach(slider => {
-        slider.value = value;
-    });
-    
-    redrawDesignPreview();
-}
-
-function updateLogoX(value) {
-    designState.logoX = value;
-    
-    // Update all X display labels
-    const xValueLabels = document.querySelectorAll('#logoXValue, #premadeLogoXValue');
-    xValueLabels.forEach(label => {
-        label.textContent = value;
-    });
-    
-    // Update all X sliders
-    const xSliders = document.querySelectorAll('#logoXSlider, #premadeLogoXSlider');
-    xSliders.forEach(slider => {
-        slider.value = value;
-    });
-    
-    redrawDesignPreview();
-}
-
-function updateLogoY(value) {
-    designState.logoY = value;
-    
-    // Update all Y display labels
-    const yValueLabels = document.querySelectorAll('#logoYValue, #premadeLogoYValue');
-    yValueLabels.forEach(label => {
-        label.textContent = value;
-    });
-    
-    // Update all Y sliders
-    const ySliders = document.querySelectorAll('#logoYSlider, #premadeLogoYSlider');
-    ySliders.forEach(slider => {
-        slider.value = value;
-    });
-    
-    redrawDesignPreview();
 }
 
 function updateBackNumber(value) {
@@ -261,6 +335,13 @@ function updateBackNumber(value) {
         input.value = paddedValue;
     });
     
+    redrawBackPreview();
+}
+
+function updateBackNumberSize(value) {
+    designState.backNumberSize = value;
+    document.querySelectorAll('#backNumberSizeSlider, #premadeBackNumberSizeSlider').forEach(el => el.value = value);
+    document.querySelectorAll('#backNumberSizeValue, #premadeBackNumberSizeValue').forEach(el => el.textContent = value + '%');
     redrawBackPreview();
 }
 
@@ -284,7 +365,14 @@ function updateBackNumberColor(color) {
 }
 
 function updateBackName(value) {
-    designState.backName = value || '';
+    designState.backName = value || 'Sample Name';
+    redrawBackPreview();
+}
+
+function updateBackNameSize(value) {
+    designState.backNameSize = value;
+    document.querySelectorAll('#backNameSizeSlider, #premadeBackNameSizeSlider').forEach(el => el.value = value);
+    document.querySelectorAll('#backNameSizeValue, #premadeBackNameSizeValue').forEach(el => el.textContent = value + '%');
     redrawBackPreview();
 }
 
@@ -343,21 +431,19 @@ function redrawBackPreview() {
     // Update back number display
     const backNumberElements = document.querySelectorAll('[data-role="backNumber"]');
     backNumberElements.forEach(el => {
-        if (designState.backNumber) {
-            el.textContent = designState.backNumber;
-            el.style.color = designState.backNumberColor;
-            el.style.transform = `translate(${(designState.backNumberX / 50) * 30}px, ${(designState.backNumberY / 50) * 30}px)`;
-        }
+        el.textContent = designState.backNumber;
+        el.style.color = designState.backNumberColor;
+        el.style.fontSize = `${designState.backNumberSize}%`;
+        el.style.transform = `translate(${(designState.backNumberX / 50) * 30}px, ${(designState.backNumberY / 50) * 30}px)`;
     });
     
     // Update back name display
     const backNameElements = document.querySelectorAll('[data-role="backName"]');
     backNameElements.forEach(el => {
-        if (designState.backName) {
-            el.textContent = designState.backName.toUpperCase();
-            el.style.color = designState.backNameColor;
-            el.style.transform = `translate(${(designState.backNameX / 50) * 30}px, ${(designState.backNameY / 50) * 30}px)`;
-        }
+        el.textContent = designState.backName.toUpperCase();
+        el.style.color = designState.backNameColor;
+        el.style.fontSize = `${designState.backNameSize}%`;
+        el.style.transform = `translate(${(designState.backNameX / 50) * 30}px, ${(designState.backNameY / 50) * 30}px)`;
     });
 }
 
@@ -389,6 +475,447 @@ function submitOrder() {
         window.location.href = 'products.html';
         resetDesignState();
     }, 2000);
+}
+
+// Initialize EmailJS when DOM is ready
+// Initialize EmailJS when DOM is ready
+const EMAILJS_SERVICE_ID = 'service_gzzje7c';
+const EMAILJS_TEMPLATE_ID = 'template_jjavxzf';
+let emailjsInitialized = false;
+
+// Try to initialize EmailJS with retries
+function initializeEmailJS() {
+    if (typeof emailjs !== 'undefined' && !emailjsInitialized) {
+        try {
+            emailjs.init('Pqse8h-LaxFgSW1SH');
+            emailjsInitialized = true;
+            console.log('✓ EmailJS initialized successfully');
+            return true;
+        } catch (e) {
+            console.error('Error initializing EmailJS:', e);
+        }
+    } else if (typeof emailjs === 'undefined') {
+        console.log('⏳ EmailJS not available yet, will retry...');
+    } else {
+        console.log('✓ EmailJS already initialized');
+        emailjsInitialized = true;
+        return true;
+    }
+    return false;
+}
+
+// Try to init immediately
+initializeEmailJS();
+
+// Try to init on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    initializeEmailJS();
+    // Retry with increasing delays
+    setTimeout(initializeEmailJS, 300);
+    setTimeout(initializeEmailJS, 800);
+    setTimeout(initializeEmailJS, 1500);
+});
+
+// Also add a fallback that checks when the page is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEmailJS);
+} else {
+    initializeEmailJS();
+}
+
+function prepareOrderSubmission(event) {
+    event.preventDefault();
+    
+    console.log('=== FORM SUBMISSION DEBUG ===');
+    console.log('Event target:', event.target);
+    console.log('Event target type:', event.target.tagName);
+    console.log('Order form section visible:', !document.getElementById('orderFormSection').classList.contains('hidden'));
+    
+    // Try to init EmailJS one more time before submission
+    if (!emailjsInitialized) {
+        initializeEmailJS();
+    }
+    
+    // Validate required fields
+    const phone = document.getElementById('orderPhone').value;
+    const email = document.getElementById('orderEmail').value;
+    const shirtQty = document.getElementById('shirtQuantity').value;
+    const shirtSizes = document.getElementById('shirtSizes').value;
+    
+    console.log('Phone:', phone ? '✓' : '✗');
+    console.log('Email:', email ? '✓' : '✗');
+    console.log('Shirt Qty:', shirtQty ? '✓' : '✗');
+    console.log('Shirt Sizes:', shirtSizes ? '✓' : '✗');
+    
+    if (!phone || !email || !shirtQty || !shirtSizes) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Show loading message
+    const submitBtn = event.target.querySelector('button[type="submit"]') || event.target;
+    console.log('Submit button:', submitBtn);
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Processing...';
+    submitBtn.disabled = true;
+    
+    // Capture both front and back jersey designs
+    captureBothDesignViews().then(() => {
+        const frontImageData = capturedDesignData.frontImage;
+        const backImageData = capturedDesignData.backImage;
+        const designData = capturedDesignData.designData;
+        
+        console.log('Design capture complete, storing in localStorage...');
+        console.log('Front image data to store:', capturedDesignData.frontImage ? 'exists, length=' + capturedDesignData.frontImage.length : 'null');
+        console.log('Back image data to store:', capturedDesignData.backImage ? 'exists, length=' + capturedDesignData.backImage.length : 'null');
+        
+        // Store design images in localStorage for display on confirmation
+        try {
+            if (capturedDesignData.frontImage) {
+                localStorage.setItem('orderFrontDesign', capturedDesignData.frontImage);
+                console.log('✓ Front image stored in localStorage');
+            } else {
+                console.error('❌ Front image is null or undefined');
+            }
+            if (capturedDesignData.backImage) {
+                localStorage.setItem('orderBackDesign', capturedDesignData.backImage);
+                console.log('✓ Back image stored in localStorage');
+            } else {
+                localStorage.setItem('orderBackDesign', 'Not captured');
+                console.log('✓ Back image marked as not captured');
+            }
+        } catch (e) {
+            console.error('Error storing designs in localStorage:', e);
+        }
+        
+        // Try to send email via backend
+        console.log('Attempting to send order via backend...');
+        
+        // Get form elements with better error handling
+        const shirtQtyElement = document.getElementById('shirtQuantity');
+        const shirtSizesElement = document.getElementById('shirtSizes');
+        const pantQtyElement = document.getElementById('pantQuantity');
+        const pantSizesElement = document.getElementById('pantSizes');
+        const playernamesElement = document.getElementById('playernames');
+        const playernumbersElement = document.getElementById('playernumbers');
+        
+        console.log('Form elements found:', {
+            shirtQty: !!shirtQtyElement,
+            shirtSizes: !!shirtSizesElement,
+            pantQty: !!pantQtyElement,
+            pantSizes: !!pantSizesElement,
+            playernames: !!playernamesElement,
+            playernumbers: !!playernumbersElement
+        });
+        
+        if (!shirtQtyElement || !shirtSizesElement) {
+            console.error('Required form elements not found. Are you on the order form page?');
+            alert('Error: Order form not found. Please try again.');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            return;
+        }
+        
+        // Prepare order data to send to backend
+        const orderDataForBackend = {
+            phone: phone,
+            email: email,
+            shirtQuantity: shirtQtyElement.value,
+            shirtSizes: shirtSizesElement.value,
+            pantQuantity: pantQtyElement ? pantQtyElement.value : 'N/A',
+            pantSizes: pantSizesElement ? pantSizesElement.value : 'N/A',
+            playernames: playernamesElement ? playernamesElement.value : 'N/A',
+            playernumbers: playernumbersElement ? playernumbersElement.value : 'N/A',
+            designData: designData,
+            // Send combined design screenshot as the backend expects it
+            designScreenshot: 'FRONT_VIEW:\n' + (capturedDesignData.frontImage || '') + '\n\nBACK_VIEW:\n' + (capturedDesignData.backImage || '')
+        };
+        
+        // Try to send to backend on localhost:3001
+        fetch('http://localhost:3001/api/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderDataForBackend)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Backend response:', data);
+                if (data.success) {
+                    console.log('✓ Order sent to backend successfully');
+                    completeOrderSubmission(email, submitBtn, originalText, false);
+                } else {
+                    console.error('Backend returned error:', data.message);
+                    completeOrderSubmission(email, submitBtn, originalText, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending to backend:', error);
+                console.log('Backend not available, but order is saved locally');
+                // Still proceed even if backend is down
+                completeOrderSubmission(email, submitBtn, originalText, true);
+            });
+        
+    }).catch(error => {
+        console.error('Error capturing design:', error);
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        alert('Error capturing design. Please try again.');
+    });
+}
+
+function completeOrderSubmission(email, submitBtn, originalText, skipEmail = false) {
+    const message = skipEmail 
+        ? 'Thank you for your order! Your design has been saved. We will contact you shortly.'
+        : 'Thank you for your order! We will contact you shortly to confirm your custom jersey design.';
+    
+    alert(message);
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+    
+    // Reset form
+    document.getElementById('orderForm').reset();
+    
+    // Store order info and redirect after 2 seconds
+    localStorage.setItem('lastOrderEmail', email);
+    setTimeout(() => {
+        window.location.href = 'order-confirmation.html';
+        resetDesignState();
+    }, 2000);
+}
+
+let capturedDesignData = {
+    frontImage: null,
+    backImage: null,
+    designData: null
+};
+
+function captureBothDesignViews() {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('Starting capture process for type:', designState.type);
+            
+            if (typeof html2canvas === 'undefined') {
+                console.error('html2canvas library not loaded');
+                reject(new Error('html2canvas library not loaded'));
+                return;
+            }
+
+            // For premade designs, capture the actual jersey preview images
+            if (designState.type === 'premade') {
+                // The selected premade design is stored with ID 'selectedJerseyImage'
+                const frontImage = document.getElementById('selectedJerseyImage');
+                const backContainer = document.getElementById('premadeBackDesignContent');
+                
+                if (!frontImage) {
+                    console.error('Selected jersey image not found');
+                    reject(new Error('Selected jersey image not found'));
+                    return;
+                }
+                
+                if (!backContainer) {
+                    console.error('Back container not found');
+                    reject(new Error('Back container not found'));
+                    return;
+                }
+
+                console.log('Capturing premade front image...');
+                
+                // Create a wrapper div to capture the entire front view
+                const frontWrapper = document.createElement('div');
+                frontWrapper.style.display = 'inline-block';
+                frontWrapper.appendChild(frontImage.cloneNode(true));
+                document.body.appendChild(frontWrapper);
+                
+                // Capture front image directly
+                html2canvas(frontWrapper, {
+                    backgroundColor: 'transparent',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(frontCanvas => {
+                    console.log('Front captured successfully');
+                    const frontDataUrl = frontCanvas.toDataURL('image/png');
+                    console.log('Front image data length:', frontDataUrl.length);
+                    capturedDesignData.frontImage = frontDataUrl;
+                    document.body.removeChild(frontWrapper);
+
+                    // Now capture back view
+                    console.log('Capturing premade back view...');
+                    const backWasHidden = backContainer.classList.contains('hidden');
+                    if (backWasHidden) {
+                        backContainer.classList.remove('hidden');
+                        backContainer.style.display = 'block';
+                        backContainer.style.visibility = 'visible';
+                    }
+
+                    // Wait for DOM to update
+                    setTimeout(() => {
+                        try {
+                            // Capture the entire back container (image + text overlays)
+                            const backPreviewContainer = backContainer.querySelector('.jersey-preview');
+                            if (backPreviewContainer) {
+                                const backWrapper = document.createElement('div');
+                                backWrapper.style.display = 'inline-block';
+                                backWrapper.style.width = '300px';
+                                backWrapper.style.position = 'relative';
+                                
+                                // Clone the entire preview container which includes the image and text overlays
+                                backWrapper.appendChild(backPreviewContainer.cloneNode(true));
+                                document.body.appendChild(backWrapper);
+
+                                html2canvas(backWrapper, {
+                                    backgroundColor: 'transparent',
+                                    scale: 2,
+                                    useCORS: true,
+                                    allowTaint: true
+                                }).then(backCanvas => {
+                                    console.log('Back captured successfully');
+                                    const backDataUrl = backCanvas.toDataURL('image/png');
+                                    capturedDesignData.backImage = backDataUrl;
+                                    document.body.removeChild(backWrapper);
+
+                                    // Prepare design data summary
+                                    const designDataSummary = prepareDesignData();
+                                    capturedDesignData.designData = designDataSummary;
+
+                                    // Hide back view again if it was hidden
+                                    if (backWasHidden) {
+                                        backContainer.classList.add('hidden');
+                                    }
+
+                                    console.log('Both views captured successfully');
+                                    resolve();
+                                }).catch(err => {
+                                    console.error('Error capturing back view:', err);
+                                    if (document.body.contains(backWrapper)) {
+                                        document.body.removeChild(backWrapper);
+                                    }
+                                    if (backWasHidden) {
+                                        backContainer.classList.add('hidden');
+                                    }
+                                    reject(err);
+                                });
+                            } else {
+                                reject(new Error('Back preview container not found'));
+                            }
+                        } catch (e) {
+                            console.error('Error in back capture try block:', e);
+                            if (backWasHidden) {
+                                backContainer.classList.add('hidden');
+                            }
+                            reject(e);
+                        }
+                    }, 300);
+
+                }).catch(err => {
+                    console.error('Error capturing front view:', err);
+                    if (document.body.contains(frontWrapper)) {
+                        document.body.removeChild(frontWrapper);
+                    }
+                    reject(err);
+                });
+
+            } else if (designState.type === 'custom') {
+                // For custom designs, capture the SVG elements
+                const frontContainer = document.getElementById('frontDesignContent');
+                const backContainer = document.getElementById('backDesignContent');
+                
+                if (!frontContainer || !backContainer) {
+                    reject(new Error('Design containers not found'));
+                    return;
+                }
+
+                const frontWasHidden = frontContainer.classList.contains('hidden');
+                if (frontWasHidden) {
+                    frontContainer.classList.remove('hidden');
+                }
+
+                html2canvas(frontContainer, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(frontCanvas => {
+                    console.log('Front captured successfully');
+                    capturedDesignData.frontImage = frontCanvas.toDataURL('image/png');
+
+                    if (frontWasHidden) {
+                        frontContainer.classList.add('hidden');
+                    }
+
+                    const backWasHidden = backContainer.classList.contains('hidden');
+                    if (backWasHidden) {
+                        backContainer.classList.remove('hidden');
+                        backContainer.style.display = 'block';
+                    }
+
+                    setTimeout(() => {
+                        html2canvas(backContainer, {
+                            backgroundColor: '#ffffff',
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: true
+                        }).then(backCanvas => {
+                            console.log('Back captured successfully');
+                            capturedDesignData.backImage = backCanvas.toDataURL('image/png');
+                            const designDataSummary = prepareDesignData();
+                            capturedDesignData.designData = designDataSummary;
+
+                            if (backWasHidden) {
+                                backContainer.classList.add('hidden');
+                            }
+
+                            console.log('Both views captured successfully');
+                            resolve();
+                        }).catch(err => {
+                            console.error('Error capturing back view:', err);
+                            if (backWasHidden) {
+                                backContainer.classList.add('hidden');
+                            }
+                            reject(err);
+                        });
+                    }, 300);
+                }).catch(err => {
+                    console.error('Error capturing front view:', err);
+                    if (frontWasHidden) {
+                        frontContainer.classList.add('hidden');
+                    }
+                    reject(err);
+                });
+
+            } else {
+                reject(new Error('Unknown design type'));
+            }
+
+        } catch (e) {
+            console.error('Capture error:', e);
+            reject(e);
+        }
+    });
+}
+
+function prepareDesignData() {
+    // Create a summary of the design customizations
+    const summary = {
+        designType: designState.type,
+        currentView: designState.currentView,
+        premadeDesign: designState.premadeDesign?.name || 'Custom',
+        frontLogos: designState.frontLogos.length,
+        backNumber: designState.backNumber,
+        backNumberSize: designState.backNumberSize,
+        backNumberColor: designState.backNumberColor,
+        backNumberX: designState.backNumberX,
+        backNumberY: designState.backNumberY,
+        backName: designState.backName,
+        backNameSize: designState.backNameSize,
+        backNameColor: designState.backNameColor,
+        backNameX: designState.backNameX,
+        backNameY: designState.backNameY
+    };
+    
+    return JSON.stringify(summary, null, 2);
 }
 
 function resetDesignState() {

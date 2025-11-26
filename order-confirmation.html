@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Haider Cricket</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .confirmation-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .confirmation-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .confirmation-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .designs-section {
+            margin: 40px 0;
+        }
+
+        .designs-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .design-preview {
+            background: #f5f5f5;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .design-preview h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .design-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .design-preview.empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            color: #999;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-color, #667eea);
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+
+        .order-details {
+            background: #f9f9f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .order-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .order-details p {
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .order-details strong {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .designs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .confirmation-container {
+                padding: 20px;
+            }
+
+            .confirmation-header h1 {
+                font-size: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="WhatsApp_Image_2025-11-16_at_22.29.02-removebg-preview.png" alt="Haider Cricket Logo" class="logo">
+            <span class="brand-name">HAIDER CRICKET</span>
+        </div>
+    </nav>
+
+    <section style="padding-top: 8rem; background: var(--light-gray); min-height: 100vh;">
+        <div class="confirmation-container">
+            <div class="confirmation-header">
+                <div class="success-icon">✓</div>
+                <h1>Order Confirmed!</h1>
+                <p>Thank you for your order. We will contact you shortly to confirm the details.</p>
+            </div>
+
+            <div class="order-details">
+                <h3>What's Next?</h3>
+                <p>
+                    We have received your custom jersey order with the design shown below. 
+                    Our team will review your design and contact you using the phone number and email you provided to confirm the order and discuss any details.
+                </p>
+            </div>
+
+            <div class="designs-section">
+                <h2>Your Jersey Design</h2>
+                <div class="designs-grid">
+                    <div class="design-preview">
+                        <h3>Front View</h3>
+                        <div id="frontDesign" class="empty">Loading...</div>
+                    </div>
+                    <div class="design-preview">
+                        <h3>Back View</h3>
+                        <div id="backDesign" class="empty">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="products.html" class="btn btn-primary">Create Another Design</a>
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Haider Cricket. Forged for the Brave. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Load and display the designs from localStorage
+        window.addEventListener('load', () => {
+            console.log('Confirmation page loaded, checking localStorage...');
+            
+            // List all localStorage items for debugging
+            console.log('All localStorage items:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                console.log(`  ${key}: ${value ? value.substring(0, 100) + '...' : 'empty'}`);
+            }
+            
+            const frontDesign = localStorage.getItem('orderFrontDesign');
+            const backDesign = localStorage.getItem('orderBackDesign');
+
+            console.log('Front design exists:', !!frontDesign);
+            console.log('Back design exists:', !!backDesign);
+            console.log('Front design type:', typeof frontDesign);
+            console.log('Back design type:', typeof backDesign);
+            console.log('Front design length:', frontDesign ? frontDesign.length : 0);
+            console.log('Back design length:', backDesign ? backDesign.length : 0);
+            
+            // Check if starts with data URL
+            if (frontDesign) {
+                console.log('Front design starts with:', frontDesign.substring(0, 50));
+            }
+            if (backDesign) {
+                console.log('Back design starts with:', backDesign.substring(0, 50));
+            }
+
+            if (frontDesign && frontDesign !== 'undefined' && frontDesign.startsWith('data:')) {
+                try {
+                    console.log('Creating front image...');
+                    const img = document.createElement('img');
+                    img.src = frontDesign;
+                    img.onload = () => {
+                        console.log('Front image loaded successfully');
+                        document.getElementById('frontDesign').innerHTML = '';
+                        document.getElementById('frontDesign').appendChild(img);
+                    };
+                    img.onerror = (e) => {
+                        console.error('Failed to load front image:', e);
+                        document.getElementById('frontDesign').innerHTML = '<p>Failed to load front image</p>';
+                    };
+                    document.getElementById('frontDesign').innerHTML = '<p>Loading image...</p>';
+                } catch (e) {
+                    console.error('Error displaying front image:', e);
+                    document.getElementById('frontDesign').innerHTML = '<p>Error loading image</p>';
+                }
+            } else {
+                console.log('Front design is not valid:', { frontDesign });
+                document.getElementById('frontDesign').innerHTML = '<p>No front design captured</p>';
+            }
+
+            if (backDesign && backDesign !== 'undefined' && backDesign !== 'Not captured' && backDesign.startsWith('data:')) {
+                try {
+                    console.log('Creating back image...');
+                    const img = document.createElement('img');
+                    img.src = backDesign;
+                    img.onload = () => {
+                        console.log('Back image loaded successfully');
+                        document.getElementById('backDesign').innerHTML = '';
+                        document.getElementById('backDesign').appendChild(img);
+                    };
+                    img.onerror = (e) => {
+                        console.error('Failed to load back image:', e);
+                        document.getElementById('backDesign').innerHTML = '<p>Failed to load back image</p>';
+                    };
+                    document.getElementById('backDesign').innerHTML = '<p>Loading image...</p>';
+                } catch (e) {
+                    console.error('Error displaying back image:', e);
+                    document.getElementById('backDesign').innerHTML = '<p>Error loading image</p>';
+                }
+            } else {
+                console.log('Back design is not valid:', { backDesign });
+                document.getElementById('backDesign').innerHTML = '<p>No back design captured</p>';
+            }
+
+            // Clean up localStorage after displaying
+            setTimeout(() => {
+                console.log('Clearing localStorage...');
+                localStorage.removeItem('orderFrontDesign');
+                localStorage.removeItem('orderBackDesign');
+                localStorage.removeItem('lastOrderEmail');
+            }, 120000); // Clear after 2 minutes
+        });
+    </script>
+</body>
+</html>
