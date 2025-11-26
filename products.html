@@ -378,39 +378,16 @@
                         <input type="email" id="orderEmail" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="shirtQuantity">Number of Shirts *</label>
-                        <input type="number" id="shirtQuantity" name="shirtQuantity" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="shirtSizes">Shirt Sizes (e.g., S, M, L, XL) *</label>
-                        <input type="text" id="shirtSizes" name="shirtSizes" placeholder="e.g., 2x M, 3x L, 1x XL" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pantQuantity">Number of Pants</label>
-                        <input type="number" id="pantQuantity" name="pantQuantity" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="pantSizes">Pant Sizes (e.g., 30, 32, 34)</label>
-                        <input type="text" id="pantSizes" name="pantSizes" placeholder="e.g., 2x 32, 1x 34">
-                    </div>
-                    <div class="form-group">
-                        <label for="playernames">Player Names List</label>
-                        <input type="text" id="playernames" name="playernames" placeholder="e.g., John Doe, Jane Smith">
-                    </div>
-                    <div class="form-group">
-                        <label for="playernumbers">Player Numbers List</label>
-                        <input type="text" id="playernumbers" name="playernumbers" placeholder="e.g., 10, 7, 23">
-                    </div>
-                    <div class="form-group">
-                        <label>Upload Club Logo(s) Again</label>
-                        <input type="file" id="finalLogoUpload" accept="image/*" multiple style="display:none;">
-                        <button type="button" class="upload-btn" onclick="document.getElementById('finalLogoUpload').click()">Choose Files</button>
-                        <div id="logoPreviewContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;"></div>
+                        <label>Upload Club Logo(s)</label>
+                        <input type="file" id="quoteLogoUpload" accept="image/*" multiple style="display:none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('quoteLogoUpload').click()">Choose Files</button>
+                        <div id="quoteLogoPreviewContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;"></div>
                     </div>
                     <!-- Hidden field to store jersey design screenshot -->
                     <textarea id="designScreenshot" name="designScreenshot" style="display:none;"></textarea>
                     <textarea id="designData" name="designData" style="display:none;"></textarea>
-                    <button type="submit" class="cta-btn">Submit Order</button>
+                    <textarea id="uploadedLogosData" name="uploadedLogosData" style="display:none;"></textarea>
+                    <button type="submit" class="cta-btn">Get a Quote</button>
                 </form>
             </div>
         </section>

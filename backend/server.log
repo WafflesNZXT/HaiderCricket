@@ -1,0 +1,8 @@
+
+> haider-cricket-backend@1.0.0 start
+> node server.js
+
+
+🏏 Order processing server running on http://localhost:3001
+📧 Webhook endpoint: http://localhost:${PORT}/api/order
+

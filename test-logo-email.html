@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Logo Email</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+        .test-section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        textarea { width: 100%; height: 100px; }
+    </style>
+</head>
+<body>
+    <h1>Logo Email Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Backend Directly</h2>
+        <button onclick="testBackendDirectly()">Send Test Email with Logo</button>
+        <div id="test1Result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Frontend Form</h2>
+        <form id="testForm">
+            <div>
+                <label>Phone: <input type="tel" id="testPhone" value="555-TEST" required></label>
+            </div>
+            <div>
+                <label>Email: <input type="email" id="testEmail" value="test@test.com" required></label>
+            </div>
+            <div>
+                <label>Upload Logo:</label>
+                <input type="file" id="testLogoUpload" accept="image/*" onchange="handleTestLogoUpload(event)">
+                <div id="logoPreview"></div>
+            </div>
+            <button type="button" onclick="submitTestForm()">Submit with Current Logos</button>
+        </form>
+        <div id="test2Result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Logs</h2>
+        <textarea id="logs" readonly></textarea>
+        <button onclick="document.getElementById('logs').value = ''">Clear Logs</button>
+    </div>
+    
+    <script>
+        let testLogos = [];
+        
+        function log(message, type = 'info') {
+            const logsArea = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logsArea.value += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logsArea.scrollTop = logsArea.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+        
+        function handleTestLogoUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('logoPreview');
+            preview.innerHTML = '';
+            testLogos = [];
+            let processed = 0;
+            
+            if (files.length === 0) {
+                log('No files selected');
+                return;
+            }
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result;
+                    testLogos.push({ name: file.name, data: base64 });
+                    
+                    // Create preview
+                    const img = document.createElement('img');
+                    img.src = base64;
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.style.margin = '5px';
+                    img.style.border = '2px solid #ddd';
+                    preview.appendChild(img);
+                    
+                    processed++;
+                    if (processed === files.length) {
+                        log(`Loaded ${testLogos.length} logos for test`, 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function testBackendDirectly() {
+            const resultDiv = document.getElementById('test1Result');
+            log('Starting direct backend test...', 'info');
+            
+            // Create a minimal 1x1 PNG
+            const minimalPng = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+            
+            const payload = {
+                phone: '555-TEST',
+                email: 'test@test.com',
+                designData: 'test design',
+                uploadedLogos: JSON.stringify([
+                    { name: 'test-logo.png', data: minimalPng }
+                ]),
+                designScreenshot: `FRONT_VIEW:\n${minimalPng}\n\nBACK_VIEW:\n${minimalPng}`
+            };
+            
+            log('Sending payload to backend...', 'info');
+            log(`uploadedLogos length: ${payload.uploadedLogos.length}`, 'info');
+            
+            fetch('http://localhost:3001/api/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    log('✓ Backend accepted request', 'success');
+                    resultDiv.innerHTML = '<div class="status success">✓ Email sent! Check your inbox in a moment.</div>';
+                } else {
+                    log(`Backend error: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="status error">Error: ${data.message}</div>`;
+                }
+            })
+            .catch(e => {
+                log(`Network error: ${e.message}`, 'error');
+                resultDiv.innerHTML = `<div class="status error">Error: ${e.message}</div>`;
+            });
+        }
+        
+        function submitTestForm() {
+            const resultDiv = document.getElementById('test2Result');
+            const phone = document.getElementById('testPhone').value;
+            const email = document.getElementById('testEmail').value;
+            
+            if (!phone || !email) {
+                log('Missing required fields', 'error');
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (testLogos.length === 0) {
+                log('No logos selected', 'error');
+                alert('Please select at least one logo');
+                return;
+            }
+            
+            log(`Submitting form with ${testLogos.length} logos...`, 'info');
+            log(`Logos JSON: ${JSON.stringify(testLogos.map(l => ({ name: l.name, size: l.data.length }))).substring(0, 100)}...`, 'debug');
+            
+            const payload = {
+                phone: phone,
+                email: email,
+                designData: 'manual test',
+                uploadedLogos: JSON.stringify(testLogos),
+                designScreenshot: 'FRONT_VIEW:\ntest\n\nBACK_VIEW:\ntest'
+            };
+            
+            log(`Full payload uploadedLogos: ${payload.uploadedLogos.substring(0, 100)}...`, 'debug');
+            
+            fetch('http://localhost:3001/api/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    log('✓ Form submitted successfully', 'success');
+                    resultDiv.innerHTML = '<div class="status success">✓ Quote request sent! Check your email.</div>';
+                } else {
+                    log(`Backend error: ${data.message}`, 'error');
+                    resultDiv.innerHTML = `<div class="status error">Error: ${data.message}</div>`;
+                }
+            })
+            .catch(e => {
+                log(`Network error: ${e.message}`, 'error');
+                resultDiv.innerHTML = `<div class="status error">Error: ${e.message}</div>`;
+            });
+        }
+        
+        log('Test page loaded. Backend should be running on http://localhost:3001', 'info');
+    </script>
+</body>
+</html>

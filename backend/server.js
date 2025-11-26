@@ -30,7 +30,13 @@ app.post('/api/order', async (req, res) => {
     try {
         const orderData = req.body;
         
-        console.log('Received order:', orderData);
+        console.log('Received order:', {
+            phone: orderData.phone,
+            email: orderData.email,
+            hasDesignScreenshot: !!orderData.designScreenshot,
+            hasUploadedLogos: !!orderData.uploadedLogos,
+            uploadedLogosLength: orderData.uploadedLogos ? orderData.uploadedLogos.length : 0
+        });
         
         // Send formatted email with design attachments
         const result = await sendOrderEmail(orderData);

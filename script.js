@@ -514,7 +514,102 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initializeEmailJS, 300);
     setTimeout(initializeEmailJS, 800);
     setTimeout(initializeEmailJS, 1500);
+    
+    // Setup logo upload handler for quote form
+    const quoteLogoUpload = document.getElementById('quoteLogoUpload');
+    if (quoteLogoUpload) {
+        quoteLogoUpload.addEventListener('change', handleQuoteLogoUpload);
+    }
 });
+
+// Handle logo uploads for quote form
+function handleQuoteLogoUpload(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('quoteLogoPreviewContainer');
+    const uploadedLogosData = document.getElementById('uploadedLogosData');
+    
+    if (!previewContainer) return;
+    
+    previewContainer.innerHTML = ''; // Clear previous previews
+    const logoArray = [];
+    let filesProcessed = 0;
+    
+    if (files.length === 0) {
+        uploadedLogosData.value = '[]';
+        return;
+    }
+    
+    Array.from(files).forEach((file, fileIndex) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Data = e.target.result;
+            const logoId = `logo-${Date.now()}-${Math.random()}`; // Unique ID for each logo
+            console.log(`[LOGO UPLOAD] File ${fileIndex + 1}: ${file.name}, base64 length: ${base64Data.length}`);
+            logoArray.push({
+                id: logoId,
+                name: file.name,
+                data: base64Data
+            });
+            
+            // Create preview
+            const previewDiv = document.createElement('div');
+            previewDiv.style.position = 'relative';
+            previewDiv.style.width = '80px';
+            previewDiv.style.height = '80px';
+            previewDiv.style.border = '2px solid #ddd';
+            previewDiv.style.borderRadius = '4px';
+            previewDiv.style.overflow = 'hidden';
+            previewDiv.style.cursor = 'pointer';
+            previewDiv.dataset.logoId = logoId;
+            
+            const img = document.createElement('img');
+            img.src = base64Data;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.textContent = '✕';
+            removeBtn.style.position = 'absolute';
+            removeBtn.style.top = '2px';
+            removeBtn.style.right = '2px';
+            removeBtn.style.background = 'rgba(255,0,0,0.7)';
+            removeBtn.style.color = 'white';
+            removeBtn.style.border = 'none';
+            removeBtn.style.borderRadius = '50%';
+            removeBtn.style.width = '20px';
+            removeBtn.style.height = '20px';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.style.padding = '0';
+            removeBtn.style.fontSize = '14px';
+            removeBtn.onclick = (e) => {
+                e.preventDefault();
+                previewDiv.remove();
+                // Remove the specific logo from the array by ID
+                const indexToRemove = logoArray.findIndex(l => l.id === logoId);
+                if (indexToRemove > -1) {
+                    logoArray.splice(indexToRemove, 1);
+                    console.log(`[LOGO UPLOAD] Removed logo ${logoId}. Remaining: ${logoArray.length}`);
+                }
+                uploadedLogosData.value = JSON.stringify(logoArray.map(l => ({ name: l.name, data: l.data })));
+            };
+            
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(removeBtn);
+            previewContainer.appendChild(previewDiv);
+            
+            filesProcessed++;
+            if (filesProcessed === files.length) {
+                // Store without the ID field (backend doesn't need it)
+                uploadedLogosData.value = JSON.stringify(logoArray.map(l => ({ name: l.name, data: l.data })));
+                console.log(`[LOGO UPLOAD] ✓ All ${logoArray.length} files processed and stored in textarea`);
+                console.log(`[LOGO UPLOAD] textarea ID: ${uploadedLogosData.id}, value length: ${uploadedLogosData.value.length}`);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
 // Also add a fallback that checks when the page is ready
 if (document.readyState === 'loading') {
@@ -536,18 +631,14 @@ function prepareOrderSubmission(event) {
         initializeEmailJS();
     }
     
-    // Validate required fields
+    // Validate required fields (only phone and email)
     const phone = document.getElementById('orderPhone').value;
     const email = document.getElementById('orderEmail').value;
-    const shirtQty = document.getElementById('shirtQuantity').value;
-    const shirtSizes = document.getElementById('shirtSizes').value;
     
     console.log('Phone:', phone ? '✓' : '✗');
     console.log('Email:', email ? '✓' : '✗');
-    console.log('Shirt Qty:', shirtQty ? '✓' : '✗');
-    console.log('Shirt Sizes:', shirtSizes ? '✓' : '✗');
     
-    if (!phone || !email || !shirtQty || !shirtSizes) {
+    if (!phone || !email) {
         alert('Please fill in all required fields');
         return;
     }
@@ -591,45 +682,40 @@ function prepareOrderSubmission(event) {
         // Try to send email via backend
         console.log('Attempting to send order via backend...');
         
-        // Get form elements with better error handling
-        const shirtQtyElement = document.getElementById('shirtQuantity');
-        const shirtSizesElement = document.getElementById('shirtSizes');
-        const pantQtyElement = document.getElementById('pantQuantity');
-        const pantSizesElement = document.getElementById('pantSizes');
-        const playernamesElement = document.getElementById('playernames');
-        const playernumbersElement = document.getElementById('playernumbers');
+        // Prepare quote data to send to backend (only contact info + design)
+        const uploadedLogosElement = document.getElementById('uploadedLogosData');
+        const uploadedLogos = uploadedLogosElement ? uploadedLogosElement.value : '[]';
         
-        console.log('Form elements found:', {
-            shirtQty: !!shirtQtyElement,
-            shirtSizes: !!shirtSizesElement,
-            pantQty: !!pantQtyElement,
-            pantSizes: !!pantSizesElement,
-            playernames: !!playernamesElement,
-            playernumbers: !!playernumbersElement
-        });
+        console.log('\n===== 📋 FORM SUBMISSION DEBUG =====');
+        console.log('[FORM] uploadedLogosElement exists?', !!uploadedLogosElement);
+        console.log('[FORM] uploadedLogosElement.id:', uploadedLogosElement ? uploadedLogosElement.id : 'N/A');
+        console.log('[FORM] Raw uploadedLogosData value:', uploadedLogos);
+        console.log('[FORM] uploadedLogosData is empty string?', uploadedLogos === '');
+        console.log('[FORM] uploadedLogosData equals "[]"?', uploadedLogos === '[]');
+        console.log('[FORM] uploadedLogosData length:', uploadedLogos.length);
         
-        if (!shirtQtyElement || !shirtSizesElement) {
-            console.error('Required form elements not found. Are you on the order form page?');
-            alert('Error: Order form not found. Please try again.');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            return;
+        // Try to parse it to see what we have
+        try {
+            const parsedLogos = JSON.parse(uploadedLogos);
+            console.log('[FORM] ✓ Parsed logos array length:', parsedLogos.length);
+            if (parsedLogos.length > 0) {
+                console.log('[FORM] Parsed logos:', parsedLogos.map(l => ({ name: l.name, hasData: !!l.data, dataLength: l.data ? l.data.length : 0 })));
+            }
+        } catch (e) {
+            console.error('[FORM] ❌ Failed to parse uploadedLogos:', e);
         }
         
-        // Prepare order data to send to backend
         const orderDataForBackend = {
             phone: phone,
             email: email,
-            shirtQuantity: shirtQtyElement.value,
-            shirtSizes: shirtSizesElement.value,
-            pantQuantity: pantQtyElement ? pantQtyElement.value : 'N/A',
-            pantSizes: pantSizesElement ? pantSizesElement.value : 'N/A',
-            playernames: playernamesElement ? playernamesElement.value : 'N/A',
-            playernumbers: playernumbersElement ? playernumbersElement.value : 'N/A',
             designData: designData,
+            uploadedLogos: uploadedLogos,
             // Send combined design screenshot as the backend expects it
             designScreenshot: 'FRONT_VIEW:\n' + (capturedDesignData.frontImage || '') + '\n\nBACK_VIEW:\n' + (capturedDesignData.backImage || '')
         };
+        
+        console.log('[FORM] About to send to backend with uploadedLogos length:', orderDataForBackend.uploadedLogos.length);
+        console.log('[FORM] First 100 chars of uploadedLogos:', orderDataForBackend.uploadedLogos.substring(0, 100));
         
         // Try to send to backend on localhost:3001
         fetch('http://localhost:3001/api/order', {
@@ -641,18 +727,18 @@ function prepareOrderSubmission(event) {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Backend response:', data);
+                console.log('[FETCH] ✓ Backend response received:', data);
                 if (data.success) {
-                    console.log('✓ Order sent to backend successfully');
+                    console.log('[FETCH] ✓ Order sent to backend successfully');
                     completeOrderSubmission(email, submitBtn, originalText, false);
                 } else {
-                    console.error('Backend returned error:', data.message);
+                    console.error('[FETCH] Backend returned error:', data.message);
                     completeOrderSubmission(email, submitBtn, originalText, true);
                 }
             })
             .catch(error => {
-                console.error('Error sending to backend:', error);
-                console.log('Backend not available, but order is saved locally');
+                console.error('[FETCH] ❌ Error sending to backend:', error);
+                console.log('[FETCH] Backend not available, but order is saved locally');
                 // Still proceed even if backend is down
                 completeOrderSubmission(email, submitBtn, originalText, true);
             });
