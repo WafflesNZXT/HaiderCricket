@@ -1045,30 +1045,45 @@ function openModifyDesignModal(designType) {
     // Clear previous preview
     previewContainer.innerHTML = '';
     
+    // Show loading message
+    previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Loading design preview...</p>';
+    
     // Store the current design type for later use
     window.currentModifyDesignType = designType;
     
-    // Get the correct canvas based on design type
-    let sourceCanvas = null;
+    // Get the correct design section to capture
+    let sourceElement = null;
     if (designType === 'premade') {
-        sourceCanvas = document.getElementById('premadeDesignCanvas');
+        sourceElement = document.getElementById('premadeFrontDesignContent');
     } else if (designType === 'custom') {
-        sourceCanvas = document.getElementById('customDesignCanvas');
+        sourceElement = document.getElementById('frontDesignContent');
     }
     
-    if (sourceCanvas) {
-        // Create a new image from the canvas
-        const img = document.createElement('img');
-        img.src = sourceCanvas.toDataURL();
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.borderRadius = '8px';
-        previewContainer.appendChild(img);
-        console.log('Canvas image rendered in modal');
+    if (sourceElement && typeof html2canvas !== 'undefined') {
+        // Use html2canvas to capture the design
+        html2canvas(sourceElement, {
+            backgroundColor: '#ffffff',
+            scale: 1.5,
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            previewContainer.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL();
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.borderRadius = '8px';
+            img.style.maxWidth = '300px';
+            previewContainer.appendChild(img);
+            console.log('Design preview captured and rendered in modal');
+        }).catch(err => {
+            console.error('Error capturing design:', err);
+            previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Design preview unavailable</p>';
+        });
     } else {
         // Fallback: Show a placeholder
-        previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Jersey design preview</p>';
-        console.log('Canvas not found, showing placeholder');
+        previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Jersey design preview unavailable</p>';
+        console.log('Design element not found or html2canvas unavailable');
     }
     
     // Load existing modifications if any
