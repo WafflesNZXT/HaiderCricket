@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Haider Cricket</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script async defer src="https://unpkg.com/@emailjs/browser@4/dist/index.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="WhatsApp_Image_2025-11-16_at_22.29.02-removebg-preview.png" alt="Haider Cricket Logo" class="logo">
+            <span class="brand-name">HAIDER CRICKET</span>
+        </div>
+        <button type="button" class="menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="products-section">
+        <h2 class="section-title">Our Products</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-image">🏏</div>
+                <div class="product-info">
+                    <h3>Custom Cricket Jersey</h3>
+                    <p>Design your own professional cricket jersey with custom logos and numbers</p>
+                    <button type="button" class="cta-btn" onclick="openDesignModal()">Customize Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Choice Modal -->
+    <div id="designModal" class="modal">
+        <div class="modal-content">
+            <h2>Choose Your Design Option</h2>
+            <div class="modal-options">
+                <button type="button" class="option-btn" onclick="selectDesignType('custom')">
+                    <strong>Custom Design</strong><br>
+                    Upload your own design
+                </button>
+                <button type="button" class="option-btn" onclick="selectDesignType('premade')">
+                    <strong>Pre-made Design</strong><br>
+                    Choose from our templates
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Design Section -->
+    <div id="customDesignSection" class="hidden">
+        <section style="background: var(--light-gray); padding-top: 8rem; min-height: 100vh;">
+            <div style="position: absolute; top: 80px; right: 20px; z-index: 10;">
+                <button type="button" class="close-btn" onclick="closeDesignSection()">✕ Back</button>
+            </div>
+            <h2 class="section-title">Customize Your Jersey</h2>
+            
+            <!-- Front Design Content -->
+            <div id="frontDesignContent">
+                <h3 style="text-align: center; margin-bottom: 1rem;">Front View</h3>
+                <div class="design-container">
+                    <div class="jersey-preview">
+                        <svg class="jersey-svg" viewBox="0 0 300 400" id="jerseyPreview">
+                            <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="frontLogoArea"/>
+                            <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        </svg>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Club Logos</h3>
+                        <button type="button" class="cta-btn" onclick="document.getElementById('frontLogoUpload').click()">+ Add Logo</button>
+                        <input type="file" id="frontLogoUpload" accept="image/*" multiple style="display:none;" onchange="handleMultipleLogosUpload(event, 'custom')">
+                        
+                        <div id="customFrontLogosContainer" style="margin-top: 2rem;"></div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 10px; flex-direction: column;">
+                            <button type="button" class="cta-btn" onclick="openModifyDesignModal('custom')">Modify Design Colors</button>
+                            <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Back Design Content -->
+            <div id="backDesignContent" class="hidden">
+                <h3 style="text-align: center; margin-bottom: 1rem;">Back View</h3>
+                <div class="design-container">
+                    <div class="jersey-preview" style="position: relative; display: inline-block; width: 300px; margin: 0 auto;">
+                        <img id="backPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                            <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;">SAMPLE NAME</div>
+                        </div>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Back Number</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="color" id="backNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Number Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="backNumberSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNumberSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="backNumberSizeValue" style="min-width: 30px;">100%</span>
+                        </div>
+                        
+                        <h4>Number Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="backNumberXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="backNumberXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Number Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="backNumberYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="backNumberYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2.5rem;">Back Name</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="color" id="backNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Name Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="backNameSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNameSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="backNameSizeValue" style="min-width: 30px;">100%</span>
+                        </div>
+                        
+                        <h4>Name Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="backNameXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNameX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="backNameXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Name Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="backNameYSlider" min="-100" max="50" value="0" style="flex: 1;" oninput="updateBackNameY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="backNameYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="button" class="cta-btn" onclick="editFront()" style="flex: 1;">Back to Front</button>
+                            <button type="button" class="cta-btn" onclick="proceedToOrder()" style="flex: 1;">Proceed to Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pre-made Design Section -->
+    <div id="premadeDesignSection" class="hidden">
+        <section style="background: var(--light-gray); padding-top: 8rem; min-height: 100vh;">
+            <div style="position: absolute; top: 80px; right: 20px; z-index: 10;">
+                <button type="button" class="close-btn" onclick="closeDesignSection()">✕ Back</button>
+            </div>
+            <h2 class="section-title">Choose a Pre-made Design</h2>
+            <div class="design-container">
+                <div class="design-grid">
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2000.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2000.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2001.webp', '#0066cc')">
+                        <img src="Cricket Designs/cr2001.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2002.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2002.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2003.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2003.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2004.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2004.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2005.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2005.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2006.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2006.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2007.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2007.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2008.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2008.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2009.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2009.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2010.webp', '#cc0000')">
+                        <img src="Cricket Designs/cr2010.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2011.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2011.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2012.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2012.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2013.webp', '#0066cc')">
+                        <img src="Cricket Designs/cr2013.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2014.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2014.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2015.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2015.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2016.png', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2016.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2017.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2017.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2018.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2018.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2019.png', '#1a1a1a')">
+                        <img src="Cricket Designs/cr2019.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2020.webp', '#1a5f1a')">
+                        <img src="Cricket Designs/cr2020.webp" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2021.png', '#0066cc')">
+                        <img src="Cricket Designs/cr2021.png" class="pre-design-pic">
+                    </button>
+                    <button type="button" class="design-option" onclick="selectPremadeDesign('Cricket Designs/cr2022.png', '#cc0000')">
+                        <img src="Cricket Designs/cr2022.png" class="pre-design-pic">
+                    </button>
+                </div>
+                
+                <!-- Front Design Content -->
+                <div id="premadeFrontDesignContent">
+                    <h3 style="text-align: center; margin: 2rem 0 1rem;">Front View</h3>
+                    <div class="jersey-preview">
+                        <svg class="jersey-svg" viewBox="0 0 300 400" id="premadeJerseyPreview">
+                            <path d="M 50 50 L 50 80 L 30 100 L 30 150 L 50 150 L 50 350 L 250 350 L 250 150 L 270 150 L 270 100 L 250 80 L 250 50 L 200 50 L 180 70 L 120 70 L 100 50 Z" fill="white" stroke="#ddd" stroke-width="2" id="premadeJerseyBase"/>
+                            <path d="M 130 50 L 120 70 L 180 70 L 170 50 Z" fill="white" stroke="#ddd" stroke-width="2"/>
+                            <circle cx="150" cy="150" r="40" fill="#f0f0f0" stroke="#ddd" stroke-width="2" id="premadeFrontLogoArea"/>
+                            <text x="150" y="155" text-anchor="middle" fill="#999" font-size="14">Front Logo</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h3>Club Logos</h3>
+                        <button type="button" class="cta-btn" onclick="document.getElementById('premadeLogoUpload').click()">+ Add Logo</button>
+                        <input type="file" id="premadeLogoUpload" accept="image/*" multiple style="display:none;" onchange="handleMultipleLogosUpload(event, 'premade')">
+                        
+                        <div id="premadeFrontLogosContainer" style="margin-top: 2rem;"></div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 10px; flex-direction: column;">
+                            <button type="button" class="cta-btn" onclick="openModifyDesignModal('premade')">Modify Design Colors</button>
+                            <button type="button" class="cta-btn" onclick="editBack()">Edit Back</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Back Design Content -->
+                <div id="premadeBackDesignContent" class="hidden">
+                    <h3 style="text-align: center; margin: 2rem 0 1rem;">Back View</h3>
+                    <div class="jersey-preview" style="position: relative; display: inline-block; width: 300px; margin: 0 auto;">
+                        <img id="premadeBackPreviewImage" src="Cricket Designs/BackView/5340184932631425.webp" style="max-width: 300px; width: 100%; height: auto;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                            <div data-role="backNumber" style="font-size: 4rem; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 2px; transition: all 0.1s ease;">00</div>
+                            <div data-role="backName" style="font-size: 1.5rem; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: Arial, sans-serif; letter-spacing: 1px; margin-top: 1rem; transition: all 0.1s ease;">SAMPLE NAME</div>
+                        </div>
+                    </div>
+                    <div class="upload-section">
+                        <h3>Back Number</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="color" id="premadeBackNumberColorInput" value="#ffffff" oninput="updateBackNumberColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Number Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="premadeBackNumberSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNumberSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="premadeBackNumberSizeValue" style="min-width: 30px;">100%</span>
+                        </div>
+                        
+                        <h4>Number Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="premadeBackNumberXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="premadeBackNumberXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Number Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="premadeBackNumberYSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNumberY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="premadeBackNumberYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h3 style="margin-top: 2.5rem;">Back Name</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="color" id="premadeBackNameColorInput" value="#ffffff" oninput="updateBackNameColor(this.value)" style="width: 50px; height: 40px; cursor: pointer;">
+                            <span>Color</span>
+                        </div>
+                        
+                        <h4>Name Size</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="min-width: 40px;">Small</span>
+                            <input type="range" id="premadeBackNameSizeSlider" min="50" max="150" value="100" style="flex: 1;" oninput="updateBackNameSize(this.value)">
+                            <span style="min-width: 40px;">Large</span>
+                            <span id="premadeBackNameSizeValue" style="min-width: 30px;">100%</span>
+                        </div>
+                        
+                        <h4>Name Position - Horizontal</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Left</span>
+                            <input type="range" id="premadeBackNameXSlider" min="-50" max="50" value="0" style="flex: 1;" oninput="updateBackNameX(this.value)">
+                            <span style="min-width: 40px;">Right</span>
+                            <span id="premadeBackNameXValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <h4>Name Position - Vertical</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="min-width: 40px;">Up</span>
+                            <input type="range" id="premadeBackNameYSlider" min="-200" max="50" value="0" style="flex: 1;" oninput="updateBackNameY(this.value)">
+                            <span style="min-width: 40px;">Down</span>
+                            <span id="premadeBackNameYValue" style="min-width: 30px;">0</span>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="button" class="cta-btn" onclick="editFront()" style="flex: 1;">Back to Front</button>
+                            <button type="button" class="cta-btn" onclick="proceedToOrder()" style="flex: 1;">Proceed to Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Order Form Section -->
+    <div id="orderFormSection" class="hidden">
+        <section style="padding-top: 8rem; background: var(--light-gray); min-height: 100vh;">
+            <div style="position: absolute; top: 80px; right: 20px; z-index: 10;">
+                <button type="button" class="close-btn" onclick="goBackToDesign()">✕ Back</button>
+            </div>
+            <h2 class="section-title">Complete Your Order</h2>
+            <div class="design-container">
+                <form class="order-form" id="orderForm" onsubmit="prepareOrderSubmission(event)">
+                    <div class="form-group">
+                        <label for="orderPhone">Phone Number *</label>
+                        <input type="tel" id="orderPhone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderEmail">Email *</label>
+                        <input type="email" id="orderEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Club Logo(s)</label>
+                        <input type="file" id="quoteLogoUpload" accept="image/*" multiple style="display:none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('quoteLogoUpload').click()">Choose Files</button>
+                        <div id="quoteLogoPreviewContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;"></div>
+                    </div>
+                    <!-- Hidden field to store jersey design screenshot -->
+                    <textarea id="designScreenshot" name="designScreenshot" style="display:none;"></textarea>
+                    <textarea id="designData" name="designData" style="display:none;"></textarea>
+                    <textarea id="uploadedLogosData" name="uploadedLogosData" style="display:none;"></textarea>
+                    <textarea id="designModifications" name="designModifications" style="display:none;"></textarea>
+                    <button type="submit" class="cta-btn">Get a Quote</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modify Design Modal -->
+    <div id="modifyDesignModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #333;">Modify Jersey Design Colors</h2>
+                <button type="button" class="close-btn" onclick="closeModifyDesignModal()">✕</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Jersey Preview -->
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <h3 style="margin-top: 0; color: #667eea;">Current Design</h3>
+                    <div id="modifyDesignPreview" style="width: 100%; max-width: 300px; border: 2px solid #ddd; border-radius: 8px; overflow: hidden; background: white;">
+                        <!-- Jersey canvas will be rendered here -->
+                    </div>
+                </div>
+                
+                <!-- Modification Instructions & Text Box -->
+                <div style="display: flex; flex-direction: column;">
+                    <h3 style="margin-top: 0; color: #667eea;">Specify Color Changes</h3>
+                    
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; color: #333;">Format Examples:</p>
+                        <code style="display: block; background: white; padding: 10px; border-radius: 4px; margin-bottom: 8px; font-size: 12px; color: #555;">
+                            Red → Green
+                        </code>
+                        <code style="display: block; background: white; padding: 10px; border-radius: 4px; margin-bottom: 8px; font-size: 12px; color: #555;">
+                            Black → White
+                        </code>
+                        <code style="display: block; background: white; padding: 10px; border-radius: 4px; font-size: 12px; color: #555;">
+                            Navy Blue → Gold
+                        </code>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">One color change per line. Write the original color, then an arrow (→), then the new color.</p>
+                    </div>
+                    
+                    <label style="font-weight: bold; color: #333; margin-bottom: 8px;">Your Color Changes:</label>
+                    <textarea id="designModificationsText" placeholder="Example:&#10;Red → Green&#10;Black → White&#10;Navy → Gold" style="
+                        width: 100%;
+                        height: 200px;
+                        padding: 12px;
+                        border: 2px solid #ddd;
+                        border-radius: 8px;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        font-size: 14px;
+                        resize: vertical;
+                        box-sizing: border-box;
+                    "></textarea>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button type="button" class="cta-btn" onclick="saveDesignModifications()" style="flex: 1;">Save Changes</button>
+                        <button type="button" class="upload-btn" onclick="closeModifyDesignModal()" style="flex: 1;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Haider Cricket. Forged for the Brave. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
