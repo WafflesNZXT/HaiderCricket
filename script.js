@@ -1051,16 +1051,24 @@ function openModifyDesignModal(designType) {
     // Store the current design type for later use
     window.currentModifyDesignType = designType;
     
-    // Get the correct design section to capture
+    // Get the correct jersey preview element to capture (only the jersey, not the controls)
     let sourceElement = null;
     if (designType === 'premade') {
-        sourceElement = document.getElementById('premadeFrontDesignContent');
+        // For premade, find the jersey-preview div inside premadeFrontDesignContent
+        const contentDiv = document.getElementById('premadeFrontDesignContent');
+        if (contentDiv) {
+            sourceElement = contentDiv.querySelector('.jersey-preview');
+        }
     } else if (designType === 'custom') {
-        sourceElement = document.getElementById('frontDesignContent');
+        // For custom, find the jersey-preview div inside frontDesignContent
+        const contentDiv = document.getElementById('frontDesignContent');
+        if (contentDiv) {
+            sourceElement = contentDiv.querySelector('.jersey-preview');
+        }
     }
     
     if (sourceElement && typeof html2canvas !== 'undefined') {
-        // Use html2canvas to capture the design
+        // Use html2canvas to capture only the jersey preview
         html2canvas(sourceElement, {
             backgroundColor: '#ffffff',
             scale: 1.5,
@@ -1075,7 +1083,7 @@ function openModifyDesignModal(designType) {
             img.style.borderRadius = '8px';
             img.style.maxWidth = '300px';
             previewContainer.appendChild(img);
-            console.log('Design preview captured and rendered in modal');
+            console.log('Jersey preview captured and rendered in modal');
         }).catch(err => {
             console.error('Error capturing design:', err);
             previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Design preview unavailable</p>';
@@ -1083,7 +1091,7 @@ function openModifyDesignModal(designType) {
     } else {
         // Fallback: Show a placeholder
         previewContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Jersey design preview unavailable</p>';
-        console.log('Design element not found or html2canvas unavailable');
+        console.log('Jersey preview element not found or html2canvas unavailable');
     }
     
     // Load existing modifications if any
