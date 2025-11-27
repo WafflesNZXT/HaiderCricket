@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ],
-  "env": {
-    "EMAIL_USER": "@email_user",
-    "EMAIL_PASSWORD": "@email_password",
-    "BUSINESS_EMAIL": "@business_email"
-  }
+  ]
 }

@@ -1,3 +1,4 @@
+
 /**
  * This is a backend service to handle jersey design emails
  * Deploy this on Vercel, Heroku, or any Node.js hosting
@@ -115,18 +116,28 @@ async function sendOrderEmail(orderData) {
             }
         });
         
-        // Send email to business
+        // Send email to business (multiple recipients)
         console.log(`About to send email with ${attachments.length} attachments`);
+        
+        // Get all business emails - split by comma if multiple provided
+        const businessEmails = process.env.BUSINESS_EMAIL 
+            ? process.env.BUSINESS_EMAIL.split(',').map(e => e.trim())
+            : [];
+        
+        if (businessEmails.length === 0) {
+            throw new Error('No business email configured');
+        }
+        
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
-            to: process.env.BUSINESS_EMAIL,
+            to: businessEmails.join(', '),
             cc: orderData.email,
             subject: `New Cricket Jersey Quote Request - ${orderData.phone}`,
             html: emailHTML,
             attachments: attachments
         });
         
-        console.log('Quote request email sent successfully');
+        console.log(`Quote request email sent successfully to: ${businessEmails.join(', ')}`);
         return { success: true, message: 'Quote request email sent' };
     } catch (error) {
         console.error('Error sending email:', error);
