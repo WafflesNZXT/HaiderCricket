@@ -134,33 +134,33 @@ function renderLogoControls(type) {
                 <button type="button" onclick="removeLogoAtIndex(${index}, '${type}')" style="background: #ff4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Remove</button>
             </div>
             
-            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start;">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
                 <img src="${logo.imageData}" style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 2px solid #ddd;">
-                <div style="flex: 1;">
-                    <h4>Logo Size</h4>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <span style="min-width: 40px;">Small</span>
-                        <input type="range" min="20" max="100" value="${logo.size}" style="flex: 1;" oninput="updateLogoSizeAtIndex(${index}, this.value, '${type}')">
-                        <span style="min-width: 40px;">Large</span>
-                        <span style="min-width: 30px;">${logo.size}%</span>
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Logo Size</h4>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                        <span style="font-size: 0.85rem; white-space: nowrap;">Small</span>
+                        <input type="range" min="20" max="100" value="${logo.size}" style="flex: 1; min-width: 100px;" oninput="updateLogoSizeAtIndex(${index}, this.value, '${type}')">
+                        <span style="font-size: 0.85rem; white-space: nowrap;">Large</span>
+                        <span style="min-width: 35px; text-align: right; font-size: 0.85rem;">${logo.size}%</span>
                     </div>
                 </div>
             </div>
             
-            <h4>Logo Position - Horizontal</h4>
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <span style="min-width: 40px;">Left</span>
-                <input type="range" min="-200" max="50" value="${logo.x}" style="flex: 1;" oninput="updateLogoXAtIndex(${index}, this.value, '${type}')">
-                <span style="min-width: 40px;">Right</span>
-                <span style="min-width: 30px;">${logo.x}</span>
+            <h4 style="margin: 1rem 0 0.5rem 0;">Logo Position - Horizontal</h4>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <span style="font-size: 0.85rem; white-space: nowrap;">Left</span>
+                <input type="range" min="-200" max="50" value="${logo.x}" style="flex: 1; min-width: 100px;" oninput="updateLogoXAtIndex(${index}, this.value, '${type}')">
+                <span style="font-size: 0.85rem; white-space: nowrap;">Right</span>
+                <span style="min-width: 35px; text-align: right; font-size: 0.85rem;">${logo.x}</span>
             </div>
             
-            <h4>Logo Position - Vertical</h4>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="min-width: 40px;">Up</span>
-                <input type="range" min="-50" max="350" value="${logo.y}" style="flex: 1;" oninput="updateLogoYAtIndex(${index}, this.value, '${type}')">
-                <span style="min-width: 40px;">Down</span>
-                <span style="min-width: 30px;">${logo.y}</span>
+            <h4 style="margin: 1rem 0 0.5rem 0;">Logo Position - Vertical</h4>
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span style="font-size: 0.85rem; white-space: nowrap;">Up</span>
+                <input type="range" min="-50" max="350" value="${logo.y}" style="flex: 1; min-width: 100px;" oninput="updateLogoYAtIndex(${index}, this.value, '${type}')">
+                <span style="font-size: 0.85rem; white-space: nowrap;">Down</span>
+                <span style="min-width: 35px; text-align: right; font-size: 0.85rem;">${logo.y}</span>
             </div>
         `;
         
