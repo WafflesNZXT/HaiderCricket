@@ -717,8 +717,12 @@ function prepareOrderSubmission(event) {
         console.log('[FORM] About to send to backend with uploadedLogos length:', orderDataForBackend.uploadedLogos.length);
         console.log('[FORM] First 100 chars of uploadedLogos:', orderDataForBackend.uploadedLogos.substring(0, 100));
         
-        // Try to send to backend on localhost:3001
-        fetch('http://localhost:3001/api/order', {
+        // Try to send to backend on Vercel (or localhost for development)
+        const backendUrl = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3001/api/order'
+            : 'https://haider-cricket-backend.vercel.app/api/order';
+        
+        fetch(backendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

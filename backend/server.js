@@ -59,7 +59,13 @@ app.get('/health', (req, res) => {
     res.json({ status: 'Server is running' });
 });
 
-app.listen(PORT, () => {
-    console.log(`\n🏏 Order processing server running on http://localhost:${PORT}`);
-    console.log('📧 Webhook endpoint: http://localhost:${PORT}/api/order\n');
-});
+// Export for Vercel serverless
+module.exports = app;
+
+// Local development
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`\n🏏 Order processing server running on http://localhost:${PORT}`);
+        console.log(`📧 Webhook endpoint: http://localhost:${PORT}/api/order\n`);
+    });
+}

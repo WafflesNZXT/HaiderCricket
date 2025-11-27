@@ -1,159 +1,159 @@
-# Jersey Order Email System
+# Haider Cricket Backend - Email Service on Vercel
 
-This backend service receives order submissions and sends beautifully formatted emails with jersey design previews.
+Express.js backend for handling cricket jersey quote requests and sending emails with designs.
 
-## How It Works
+## Quick Start for Vercel Deployment
 
-1. **Frontend** (products.html) captures both front and back jersey designs as PNG images
-2. **Images** are converted to base64 and sent to Formspree along with order data
-3. **Formspree webhook** posts the data to your backend server
-4. **Backend** converts base64 images back to PNG files and sends a formatted email with attachments
+This backend is configured for **free deployment on Vercel**. Follow the steps below.
 
-## Setup Instructions
+## Local Development
 
-### Step 1: Install Dependencies
 ```bash
-cd backend
 npm install
-```
-
-### Step 2: Configure Environment Variables
-
-Copy `.env.example` to `.env` and fill in your details:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-```
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-BUSINESS_EMAIL=business@haiderrcricket.com
-PORT=3000
-```
-
-**For Gmail:**
-- Enable 2-Factor Authentication
-- Generate an [App Password](https://myaccount.google.com/apppasswords)
-- Use the app password (16 characters) as `EMAIL_PASSWORD`
-
-### Step 3: Test Locally
-
-```bash
 npm start
 ```
 
-Server runs on `http://localhost:3000`
+Server runs on `http://localhost:3001`
 
-### Step 4: Expose to Internet (for testing)
+## 🚀 Deploy to Vercel (Free) - EXACT STEPS
 
-Install ngrok:
+### Step 1: Install Vercel CLI
 ```bash
-npm install -g ngrok
+npm install -g vercel
 ```
 
-In a new terminal:
+### Step 2: Login to Vercel
 ```bash
-ngrok http 3000
+vercel login
+```
+This opens a browser to authenticate with your GitHub account.
+
+### Step 3: Deploy
+```bash
+cd backend
+vercel
 ```
 
-You'll get a URL like: `https://abc123.ngrok.io`
+When asked:
+- "Set up and deploy?" → **Y**
+- "Which scope?" → Select your account
+- "Link to existing project?" → **N**
+- "Project name?" → `haider-cricket-backend`
+- "Which directory?" → `.` (current)
+- "Detected framework?" → **Other**
+- "Want to override settings?" → **N**
 
-### Step 5: Configure Formspree Webhook
-
-1. Go to your [Formspree Dashboard](https://formspree.io/dashboard)
-2. Select your form
-3. Go to **Settings → Integrations**
-4. Add Webhook:
-   - **URL**: `https://abc123.ngrok.io/api/order`
-   - **Events**: Form submission
-
-### Step 6: Update Frontend
-
-In `products.html`, update the form action:
-```html
-<form class="order-form" id="orderForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+**Save this URL from the output:**
+```
+https://haider-cricket-backend.vercel.app
 ```
 
-## What Gets Emailed
+### Step 4: Set Environment Variables on Vercel
 
-The email includes:
+1. Go to [https://vercel.com/dashboard](https://vercel.com/dashboard)
+2. Click your project: `haider-cricket-backend`
+3. Go to **Settings** tab
+4. Click **Environment Variables** in sidebar
+5. Add three variables:
 
 ```
-📋 Customer Information
-   • Phone number
-   • Email address
-
-👕 Shirt Order
-   • Quantity
-   • Sizes
-
-👖 Pant Order (optional)
-   • Quantity
-   • Sizes
-
-👤 Player Details (optional)
-   • Names
-   • Numbers
-
-🏏 Jersey Design Preview
-   • Front view (PNG image)
-   • Back view (PNG image)
-
-📝 Design Customization Details
-   • Design type (custom/premade)
-   • Back number styling
-   • Back name styling
-   • Logo count
-   • Color codes
-   • Position/size values
+EMAIL_USER = wafi.syed5@gmail.com
+EMAIL_PASSWORD = mgdadohzcvfhoewa
+BUSINESS_EMAIL = Haider_waqas@yahoo.com
 ```
 
-## Email Recipients
+6. Click **Save**
 
-- **To**: Your business email (BUSINESS_EMAIL in .env)
-- **CC**: Customer's email (so they get a copy)
+### Step 5: Redeploy with Variables
+```bash
+vercel --prod
+```
 
-## Deployment
+### ✅ Done!
 
-### Option 1: Vercel
+Your backend is now live at:
+```
+https://haider-cricket-backend.vercel.app
+```
 
-1. Push code to GitHub
-2. Import to Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
+The frontend automatically uses this URL. ✅
 
-### Option 2: Heroku
+## Frontend Configuration
 
-1. `heroku create your-app-name`
-2. `heroku config:set EMAIL_USER=...`
-3. `heroku config:set EMAIL_PASSWORD=...`
-4. `heroku config:set BUSINESS_EMAIL=...`
-5. `git push heroku main`
+**Good news:** No changes needed!
 
-### Option 3: Railway/Render
+The frontend (script.js) automatically detects:
+- **Local development** → uses `http://localhost:3001`
+- **GitHub Pages** → uses `https://haider-cricket-backend.vercel.app`
 
-Similar to Heroku - just set environment variables and deploy.
+## How It Works
+
+1. User fills quote form
+2. Uploads logo + designs jersey
+3. Clicks "Get a Quote"
+4. Frontend sends to your Vercel backend
+5. Backend sends formatted email with all attachments
+6. Email goes to business + CC to customer
+
+## Environment Variables
+
+### Local (.env file)
+```
+EMAIL_USER=wafi.syed5@gmail.com
+EMAIL_PASSWORD=mgdadohzcvfhoewa
+BUSINESS_EMAIL=Haider_waqas@yahoo.com
+```
+
+### On Vercel
+Set via Dashboard (Step 4 above)
+
+**Note:** `.env` is in `.gitignore` - never pushed to GitHub ✅
+
+## API Endpoint
+
+### POST `/api/order`
+
+Receives:
+- Phone & email
+- Jersey design screenshots (base64 PNG)
+- Uploaded logos (base64 images)
+
+Sends email with all attachments included.
 
 ## Troubleshooting
 
-**Images not showing in email?**
-- Make sure html2canvas is loaded in products.html
-- Check browser console for errors during capture
-- Verify base64 encoding is working
+**❌ Emails not sending?**
+1. Check environment variables on Vercel dashboard
+2. Redeploy: `vercel --prod`
+3. Check logs: `vercel logs`
 
-**Emails not sending?**
-- Check .env variables are correct
-- Verify Gmail app password (if using Gmail)
-- Check server logs for nodemailer errors
-- Ensure less secure apps are allowed (if not using app password)
+**❌ Backend URL not working?**
+1. Confirm Step 5 completed: `vercel --prod`
+2. Check environment variables are set
 
-**Webhook not triggering?**
-- Verify webhook URL in Formspree settings
-- Check ngrok is still running
-- Look at Formspree logs for failed deliveries
+**❌ "Cannot find module"?**
+```bash
+npm install
+vercel --prod
+```
 
-## Questions?
+## Updating Backend
 
-Check the console logs in your backend terminal for debugging info!
+After making changes:
+```bash
+cd backend
+git add .
+git commit -m "Update backend"
+git push
+vercel --prod
+```
+
+## Technology
+
+- Node.js + Express
+- Nodemailer (Gmail SMTP)
+- Vercel Serverless Deployment
+
+---
+
+**Original Setup Instructions** (for reference):

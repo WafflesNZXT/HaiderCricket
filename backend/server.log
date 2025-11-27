@@ -125,3 +125,28 @@ Logo 1 converted to buffer, size: 61041 bytes
 Logo 1 added to attachments with cid: uploaded-logo-1
 About to send email with 3 attachments
 Quote request email sent successfully
+Received order: {
+  phone: '475345435343',
+  email: 'Haider_waqas@yahoo.com',
+  hasDesignScreenshot: true,
+  hasUploadedLogos: true,
+  uploadedLogosLength: 81445
+}
+Parsing uploadedLogosJSON: string with data
+Parsed logos count: 1
+Extracted uploadedLogos: 1 logos
+uploadedLogos details: [
+  {
+    index: 0,
+    name: 'merclay.jpg',
+    hasData: true,
+    dataLength: 81411,
+    dataPrefix: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD'
+  }
+]
+Processing logo 1: merclay.jpg, data length: 81411
+Logo 1 converted to buffer, size: 61041 bytes
+Logo 1 added to attachments with cid: uploaded-logo-1
+About to send email with 3 attachments
+Quote request email sent successfully
+^C
