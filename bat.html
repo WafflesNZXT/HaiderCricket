@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Bat - Haider Cricket</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="WhatsApp_Image_2025-11-16_at_22.29.02-removebg-preview.png" alt="Haider Cricket Logo" class="logo">
+            <span class="brand-name">HAIDER CRICKET</span>
+        </div>
+        <button type="button" class="menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="product-detail-section">
+        <div class="product-detail-container">
+            <!-- Back Button -->
+            <div style="margin-bottom: 2rem;">
+                <a href="products.html" class="back-link" style="color: #667eea; text-decoration: none; font-weight: bold;">← Back to Products</a>
+            </div>
+
+            <div class="product-detail-grid">
+                <!-- Image Carousel -->
+                <div class="product-images">
+                    <div class="main-image-container">
+                        <img id="mainImage" src="CricketBatPhotos/DSC-Intense-Bat-Angle.jpg" alt="Cricket Bat" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <div class="thumbnail-container">
+                        <img class="thumbnail active" src="CricketBatPhotos/DSC-Intense-Bat-Angle.jpg" onclick="changeImage(this.src)" style="cursor: pointer;">
+                        <img class="thumbnail" src="CricketBatPhotos/DSC-Intense-Bat-Toe.jpg" onclick="changeImage(this.src)" style="cursor: pointer;">
+                        <img class="thumbnail" src="CricketBatPhotos/278048_Gallery_4_1327542.jpg" onclick="changeImage(this.src)" style="cursor: pointer;">
+                        <img class="thumbnail" src="CricketBatPhotos/dscbat2.webp" onclick="changeImage(this.src)" style="cursor: pointer;">
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="product-details">
+                    <h1>Haider Willow Cricket Bat</h1>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="review-count">(67 reviews)</span>
+                    </div>
+
+                    <div class="price-section">
+                        <h2 class="price">$149.99</h2>
+                        <span class="in-stock">In Stock</span>
+                    </div>
+
+                    <div class="description">
+                        <h3>Description</h3>
+                        <p>Our professional-grade cricket bat is crafted from premium English willow, designed for superior performance and durability. Perfect for both practice and competitive matches.</p>
+                        <ul style="margin-top: 1rem; margin-left: 1.5rem;">
+                            <li>100% English Willow</li>
+                            <li>Weight: 2.8 lbs (1270g)</li>
+                            <li>Balance Point: Mid-blade</li>
+                            <li>Sweet Spot: Extra Large (30mm)</li>
+                            <li>Superior Edge Technology</li>
+                            <li>Professional Grade</li>
+                        </ul>
+                    </div>
+
+                    <div class="specifications">
+                        <h3>Specifications</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd; font-weight: bold; width: 50%;">Material:</td>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd;">English Willow Grade 1</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd; font-weight: bold;">Length:</td>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd;">38.5 inches</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd; font-weight: bold;">Handle Type:</td>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd;">Cane Handle</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd; font-weight: bold;">Toe Guard:</td>
+                                <td style="padding: 0.5rem; border-bottom: 1px solid #ddd;">Rubber</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Warranty:</td>
+                                <td style="padding: 0.5rem;">1 Year Manufacturing Defect</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="order-section">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                            <label for="quantity" style="font-weight: bold;">Quantity:</label>
+                            <input type="number" id="quantity" min="1" max="100" value="1" style="width: 80px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                        </div>
+                        <button type="button" class="cta-btn" onclick="orderBat()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Order</button>
+                        <h4 style="color: lightgray; margin-top: 0.3rem;">To order, fill out your contact info, and we will contact you shortly for more details.</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section" style="margin-top: 4rem;">
+                <h2>Customer Reviews</h2>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <strong>Rashid Khan</strong>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <span style="color: #999; font-size: 0.9rem;">Verified Purchase - 2 months ago</span>
+                    </div>
+                    <h4>Excellent Quality!</h4>
+                    <p>Best cricket bat I've ever owned. The sweet spot is massive and it provides incredible power. Perfect for serious players.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <strong>Ahmad Hassan</strong>
+                            <span class="stars">★★★★☆</span>
+                        </div>
+                        <span style="color: #999; font-size: 0.9rem;">Verified Purchase - 1 month ago</span>
+                    </div>
+                    <h4>Great Performance</h4>
+                    <p>Solid bat with excellent balance. Exactly what I needed for my club matches. Shipping was fast too!</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <strong>Karim Abdullah</strong>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <span style="color: #999; font-size: 0.9rem;">Verified Purchase - 3 weeks ago</span>
+                    </div>
+                    <h4>Outstanding Choice</h4>
+                    <p>Professional grade quality at a reasonable price. The English willow is of premium quality. Highly recommended for all cricket players.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <strong>Mohammed Yousaf</strong>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <span style="color: #999; font-size: 0.9rem;">Verified Purchase - 1 week ago</span>
+                    </div>
+                    <h4>Fantastic!</h4>
+                    <p>This bat exceeded my expectations. Great edge technology and the sweet spot is perfect. Worth every penny!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Haider Cricket. Forged for the Brave. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function orderBat() {
+            const quantity = document.getElementById('quantity').value;
+            alert(`Added ${quantity} cricket bat(s) to order! Coming soon: Full ordering system.`);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.querySelector('.nav-menu');
+            menu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
